@@ -13,6 +13,19 @@ using namespace std;
 
 string to_string(double x);
 
+struct G {
+	// general parameters
+
+	double speed; // ext input speed level
+	double y_inter; // y intercept
+	double scale; //0.1; // multiple synaptic connections scaling factor
+	double s_1; // sigma_1
+	double s_2;
+	double s_3;
+	double m; // magnitude variable for mex hat
+	int pos[2] = {1,1};
+};
+
 string to_string(double x)
 {
   ostringstream ss;
@@ -20,12 +33,12 @@ string to_string(double x)
   return ss.str();
 }
 
-/*string to_string(int x)
+string to_string(int x)
 {
   ostringstream ss;
   ss << x;
   return ss.str();
-}*/
+}
 
 char get_pd(int x, int y) {
 	char pd[100] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
@@ -35,7 +48,7 @@ char get_pd(int x, int y) {
 	return pd[gc_ind];
 }
 
-void print_firing(int layer_x, int layer_y, double *gc_firing, int t) {
+void print_firing(int layer_x, int layer_y, double *gc_firing, int t, G* g) {
 	int layer_size = layer_x * layer_y;
 	int gc_ind = 0; // grid cell index
 	double temp;
@@ -47,7 +60,13 @@ void print_firing(int layer_x, int layer_y, double *gc_firing, int t) {
 			for (int j = 0; j < layer_y; j++) {
 				gc_ind = (i * layer_x) + j;
 
-				printf("[%f]\t",gc_firing[gc_ind]);
+				printf("[%f]",gc_firing[gc_ind]);
+
+				if (g->pos[0] == j && g->pos[1] == i) {
+					printf(" (+)");
+				}
+
+				printf("\t");
 			}
 			cout << "\n";
 		}
@@ -107,18 +126,23 @@ void init_firing(double *gc_firing, int layer_size) {
 	gc_firing[2] = w3;
 	gc_firing[22] = w3;
 }
-struct G {
-	// general parameters
 
-	double speed = 1.5; // ext input speed level
-	double y_inter = 0.2; // y intercept
-	double scale = 0.1; // multiple synaptic connections scaling factor
-	double s_1 = 1.0; // sigma_1
-	double s_2 = 1.0;
-	double s_3 = 1.0;
-};
+void set_pos(G* g, char direction) {
+	if (direction == 'u') {
+		g->pos[1]++; 
+	}
+	else if (direction == 'd') {
+		g->pos[1]--; 
+	}
+	else if (direction == 'r') {
+		g->pos[0]++; 
+	}
+	else if (direction == 'l') {
+		g->pos[0]--; 
+	}
+}
 
-void ext_input(char direction, double speed, double *gc_firing, G g) {
+void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	/*
 		Apply external input
 
@@ -133,16 +157,27 @@ void ext_input(char direction, double speed, double *gc_firing, G g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	double y_inter = g.y_inter; // y intercept
-	double scale = g.scale; // multiple synaptic connections scaling factor
-	double s_1 = g.s_1;
-	double s_2 = g.s_2;
-	double s_3 = g.s_3;
+	g->speed = 5; // ext input speed level
+	g->y_inter = 1; // y intercept
+	g->scale = 0.1; //0.1; // multiple synaptic connections scaling factor
+	g->s_1 = 2.0; // sigma_1
+	g->s_2 = 2.0;
+	g->s_3 = 2.5;
+	g->m = 1.5; // magnitude variable for mex hat
+
+	double y_inter = g->y_inter; // y intercept
+	double scale = g->scale; // multiple synaptic connections scaling factor
+	double s_1 = g->s_1;
+	double s_2 = g->s_2;
+	double s_3 = g->s_3;
+	double m = g->m;
+
+	set_pos(g, direction);
 
 	for (int pdy = 0; pdy < 10; pdy++) {
 		for (int pdx = 0; pdx < 10; pdx++) {
-			if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 7) {
-			//if (direction == get_pd(pdx, pdy)) {
+			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 7) {
+			if (direction == get_pd(pdx, pdy)) {
 				pd_i = (pdy * 10) + pdx;
 				for (int gcy = 0; gcy < 10; gcy++) {
 					for (int gcx = 0; gcx < 10; gcx++) {			
@@ -153,11 +188,18 @@ void ext_input(char direction, double speed, double *gc_firing, G g) {
 						if (d < 3.0) {
 							// distance threshold for only local connections
 
-							mex_hat = (2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow(d/s_2,2))*(exp(pow(-1*d,2)/pow(2*s_3,2)));
+							mex_hat = (2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2)));
 
-							//new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
-							new_firing = y_inter + scale * mex_hat;
+							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
+							//new_firing = y_inter + speed * scale * mex_hat;
+							//new_firing = y_inter + scale * mex_hat;
+							//new_firing = y_inter + mex_hat;
+							//new_firing = mex_hat;
 							//new_firing = d;
+
+							if (new_firing < 0) {
+								new_firing = 0.00001; // avoid negative
+							}
 
 							new_gc_firing[gc_i] = new_gc_firing[gc_i] + new_firing;
 						}
@@ -172,10 +214,10 @@ void ext_input(char direction, double speed, double *gc_firing, G g) {
 	}
 }
 
-void move_path(double *gc_firing, int t, G g) {
+void move_path(double *gc_firing, int t, G* g) {
 	// movement path
 
-	double speed = g.speed;
+	double speed = g->speed;
 	if (t == 1) {
 		ext_input('u', speed, gc_firing, g);
 	}
@@ -218,16 +260,16 @@ int main() {
 	int layer_x = 10;
 	int layer_y = 10;
 	int layer_size = layer_x * layer_y;
-	int run_time = 4;
+	int run_time = 23;
 	double gc_firing[layer_size];
 	struct G g;
 	
 	init_firing(gc_firing, layer_size);
 
 	for (int t = 0; t < run_time; t++) {
-		move_path(gc_firing, t, g);
+		move_path(gc_firing, t, &g);
 
-		print_firing(layer_x, layer_y, gc_firing, t);
+		print_firing(layer_x, layer_y, gc_firing, t, &g);
 	}
 
 	return 0;
