@@ -35,18 +35,22 @@ char get_pd(int x, int y) {
 	return pd[gc_ind];
 }
 
-void print_firing(int layer_x, int layer_y, double *gc_firing) {
+void print_firing(int layer_x, int layer_y, double *gc_firing, int t) {
 	int layer_size = layer_x * layer_y;
 	int gc_ind = 0; // grid cell index
 	double temp;
 
-	for (int i = (layer_x - 1); i >= 0; i--) {
-		for (int j = 0; j < layer_y; j++) {
-			gc_ind = (i * layer_x) + j;
+	if (t != 0) {
+		cout << "time: " << t << " sec\n";
 
-			printf("[%f]\t",gc_firing[gc_ind]);
+		for (int i = (layer_x - 1); i >= 0; i--) {
+			for (int j = 0; j < layer_y; j++) {
+				gc_ind = (i * layer_x) + j;
+
+				printf("[%f]\t",gc_firing[gc_ind]);
+			}
+			cout << "\n";
 		}
-		cout << "\n";
 	}
 }
 
@@ -103,47 +107,56 @@ void init_firing(double *gc_firing, int layer_size) {
 	gc_firing[2] = w3;
 	gc_firing[22] = w3;
 }
+struct G {
+	// general parameters
 
-void ext_input(char direction, double speed, double *gc_firing) {
+	double speed = 1.5; // ext input speed level
+	double y_inter = 0.2; // y intercept
+	double scale = 0.1; // multiple synaptic connections scaling factor
+	double s_1 = 1.0; // sigma_1
+	double s_2 = 1.0;
+	double s_3 = 1.0;
+};
+
+void ext_input(char direction, double speed, double *gc_firing, G g) {
 	/*
 		Apply external input
 
 		https://en.wikipedia.org/wiki/Ricker_wavelet
 		mexican hat: (2/(sqrt(pow((3*sigma*PI),(1/4))))*(pow(1-pow(x/sigma,2),(exp(pow(-1*x,2)/pow(2*sigma,2))))))
 	*/	
+
 	double new_gc_firing[100];
-	// init
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 100; i++) { // initialize array
 		new_gc_firing[i] = 0.000001;
 	}
-	int pd_i = 0;
-	int gc_i = 0;
-	double d;
-	double y_inter = 0.2; // y intercept
-	double new_firing;
+	int pd_i, gc_i;
+	double d, new_firing;
 	double mex_hat; // mexican hat
-	double scale = 0.1; // multiple synaptic connections scaling factor
-	double sigma = 3.0;
+	double y_inter = g.y_inter; // y intercept
+	double scale = g.scale; // multiple synaptic connections scaling factor
+	double s_1 = g.s_1;
+	double s_2 = g.s_2;
+	double s_3 = g.s_3;
 
 	for (int pdy = 0; pdy < 10; pdy++) {
 		for (int pdx = 0; pdx < 10; pdx++) {
-			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 7) {
-			if (direction == get_pd(pdx, pdy)) {
+			if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 7) {
+			//if (direction == get_pd(pdx, pdy)) {
 				pd_i = (pdy * 10) + pdx;
 				for (int gcy = 0; gcy < 10; gcy++) {
 					for (int gcx = 0; gcx < 10; gcx++) {			
 						gc_i = (gcy * 10) + gcx;
 
 						d = get_distance(pdx, pdy, gcx, gcy, direction);
-						//d = get_distance(pdx, pdy, gcx, gcy, 'n');
 
 						if (d < 3.0) {
 							// distance threshold for only local connections
 
-							mex_hat = (2/(sqrt(pow((3*sigma*PI),(1/4)))))*(1-pow(d/sigma,2))*(exp(pow(-1*d,2)/pow(2*sigma,2)));
+							mex_hat = (2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow(d/s_2,2))*(exp(pow(-1*d,2)/pow(2*s_3,2)));
 
-							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
-							//new_firing = y_inter + gc_firing[pd_i] * scale;
+							//new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
+							new_firing = y_inter + scale * mex_hat;
 							//new_firing = d;
 
 							new_gc_firing[gc_i] = new_gc_firing[gc_i] + new_firing;
@@ -159,34 +172,62 @@ void ext_input(char direction, double speed, double *gc_firing) {
 	}
 }
 
+void move_path(double *gc_firing, int t, G g) {
+	// movement path
+
+	double speed = g.speed;
+	if (t == 1) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 3) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 5) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 7) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 9) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 11) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 13) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 15) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 17) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 19) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 21) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 23) {
+		ext_input('u', speed, gc_firing, g);
+	}
+}
+
 int main() {
 	int layer_x = 10;
 	int layer_y = 10;
 	int layer_size = layer_x * layer_y;
+	int run_time = 4;
 	double gc_firing[layer_size];
-	double speed;
+	struct G g;
 	
 	init_firing(gc_firing, layer_size);
 
-	for (int t = 0; t < 10; t++) {
-		speed = 2.0;
-		if (t == 1) {
-			ext_input('u', speed, gc_firing);
-		}
-		else if (t == 3) {
-			ext_input('u', speed, gc_firing);
-		}
-		else if (t == 5) {
-			ext_input('u', speed, gc_firing);
-		}
-		else {
-			//ext_input('n', gc_firing);
-		}
+	for (int t = 0; t < run_time; t++) {
+		move_path(gc_firing, t, g);
 
-		if (t != 0) {
-			cout << "time " << t << "\n";
-			print_firing(layer_x, layer_y, gc_firing);
-		}
+		print_firing(layer_x, layer_y, gc_firing, t);
 	}
 
 	return 0;
