@@ -87,11 +87,11 @@ double get_distance(int x1, int y1, int x2, int y2, char pd) {
 void init_firing(double *gc_firing, int layer_size) {
 	// initialize firing
 
-	int w1 = 4;
-	int w2 = 3;
-	int w3 = 2;
+	int w1 = 12;
+	int w2 = 9;
+	int w3 = 6;
 	for (int i = 0; i < layer_size; i++) {
-		gc_firing[i] = 1.0;
+		gc_firing[i] = 0.3;
 	}
 	gc_firing[11] = w1;
 	gc_firing[1] = w2;
@@ -104,7 +104,7 @@ void init_firing(double *gc_firing, int layer_size) {
 	gc_firing[22] = w3;
 }
 
-void ext_input(char direction, double *gc_firing) {
+void ext_input(char direction, double speed, double *gc_firing) {
 	/*
 		Apply external input
 
@@ -119,7 +119,7 @@ void ext_input(char direction, double *gc_firing) {
 	int pd_i = 0;
 	int gc_i = 0;
 	double d;
-	double y_inter = 0.5; // y intercept
+	double y_inter = 0.2; // y intercept
 	double new_firing;
 	double mex_hat; // mexican hat
 	double scale = 0.1; // multiple synaptic connections scaling factor
@@ -142,7 +142,7 @@ void ext_input(char direction, double *gc_firing) {
 
 							mex_hat = (2/(sqrt(pow((3*sigma*PI),(1/4)))))*(1-pow(d/sigma,2))*(exp(pow(-1*d,2)/pow(2*sigma,2)));
 
-							new_firing = y_inter + gc_firing[pd_i] * scale * mex_hat;
+							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
 							//new_firing = y_inter + gc_firing[pd_i] * scale;
 							//new_firing = d;
 
@@ -164,15 +164,29 @@ int main() {
 	int layer_y = 10;
 	int layer_size = layer_x * layer_y;
 	double gc_firing[layer_size];
+	double speed;
 	
 	init_firing(gc_firing, layer_size);
 
-	ext_input('u', gc_firing);
+	for (int t = 0; t < 10; t++) {
+		speed = 2.0;
+		if (t == 1) {
+			ext_input('u', speed, gc_firing);
+		}
+		else if (t == 3) {
+			ext_input('u', speed, gc_firing);
+		}
+		else if (t == 5) {
+			ext_input('u', speed, gc_firing);
+		}
+		else {
+			//ext_input('n', gc_firing);
+		}
 
-	for (int i = 0; i < 10; i++) {
-		cout << "time " << i << "\n";
-
-		print_firing(layer_x, layer_y, gc_firing);
+		if (t != 0) {
+			cout << "time " << t << "\n";
+			print_firing(layer_x, layer_y, gc_firing);
+		}
 	}
 
 	return 0;
