@@ -24,6 +24,7 @@ struct G {
 	double s_3;
 	double m; // magnitude variable for mex hat
 	int pos[2] = {1,1};
+	char last_dir; // last dir command
 };
 
 string to_string(double x)
@@ -54,6 +55,7 @@ void print_firing(int layer_x, int layer_y, double *gc_firing, int t, G* g) {
 	double temp;
 
 	if (t != 0) {
+	//if (true) {
 		cout << "time: " << t << " sec\n";
 
 		for (int i = (layer_x - 1); i >= 0; i--) {
@@ -63,7 +65,7 @@ void print_firing(int layer_x, int layer_y, double *gc_firing, int t, G* g) {
 				printf("[%f]",gc_firing[gc_ind]);
 
 				if (g->pos[0] == j && g->pos[1] == i) {
-					printf(" (+)");
+					printf("(%c)",g->last_dir);
 				}
 
 				printf("\t");
@@ -110,9 +112,9 @@ double get_distance(int x1, int y1, int x2, int y2, char pd) {
 void init_firing(double *gc_firing, int layer_size) {
 	// initialize firing
 
-	int w1 = 12;
-	int w2 = 9;
-	int w3 = 6;
+	int w1 = 4;
+	int w2 = 3;
+	int w3 = 2;
 	for (int i = 0; i < layer_size; i++) {
 		gc_firing[i] = 0.3;
 	}
@@ -136,83 +138,15 @@ void set_pos(G* g, char direction) {
 	}
 	else if (direction == 'r') {
 		g->pos[0]++; 
+
 	}
 	else if (direction == 'l') {
 		g->pos[0]--; 
 	}
+	g->last_dir=direction;
 }
 
-void ext_input(char direction, double speed, double *gc_firing, G* g) {
-	/*
-		Apply external input
-
-		https://en.wikipedia.org/wiki/Ricker_wavelet
-		mexican hat: (2/(sqrt(pow((3*sigma*PI),(1/4))))*(pow(1-pow(x/sigma,2),(exp(pow(-1*x,2)/pow(2*sigma,2))))))
-	*/	
-
-	double new_gc_firing[100];
-	for (int i = 0; i < 100; i++) { // initialize array
-		new_gc_firing[i] = 0.000001;
-	}
-	int pd_i, gc_i;
-	double d, new_firing;
-	double mex_hat; // mexican hat
-	g->speed = 5; // ext input speed level
-	g->y_inter = 1; // y intercept
-	g->scale = 0.1; //0.1; // multiple synaptic connections scaling factor
-	g->s_1 = 2.0; // sigma_1
-	g->s_2 = 2.0;
-	g->s_3 = 2.5;
-	g->m = 1.5; // magnitude variable for mex hat
-
-	double y_inter = g->y_inter; // y intercept
-	double scale = g->scale; // multiple synaptic connections scaling factor
-	double s_1 = g->s_1;
-	double s_2 = g->s_2;
-	double s_3 = g->s_3;
-	double m = g->m;
-
-	set_pos(g, direction);
-
-	for (int pdy = 0; pdy < 10; pdy++) {
-		for (int pdx = 0; pdx < 10; pdx++) {
-			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 7) {
-			if (direction == get_pd(pdx, pdy)) {
-				pd_i = (pdy * 10) + pdx;
-				for (int gcy = 0; gcy < 10; gcy++) {
-					for (int gcx = 0; gcx < 10; gcx++) {			
-						gc_i = (gcy * 10) + gcx;
-
-						d = get_distance(pdx, pdy, gcx, gcy, direction);
-
-						if (d < 3.0) {
-							// distance threshold for only local connections
-
-							mex_hat = (2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2)));
-
-							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
-							//new_firing = y_inter + speed * scale * mex_hat;
-							//new_firing = y_inter + scale * mex_hat;
-							//new_firing = y_inter + mex_hat;
-							//new_firing = mex_hat;
-							//new_firing = d;
-
-							if (new_firing < 0) {
-								new_firing = 0.00001; // avoid negative
-							}
-
-							new_gc_firing[gc_i] = new_gc_firing[gc_i] + new_firing;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < 100; i++) {
-		gc_firing[i] = new_gc_firing[i];
-	}
-}
+void ext_input(char direction, double speed, double *gc_firing, G* g);
 
 void move_path(double *gc_firing, int t, G* g) {
 	// movement path
@@ -256,6 +190,79 @@ void move_path(double *gc_firing, int t, G* g) {
 	}
 }
 
+void ext_input(char direction, double speed, double *gc_firing, G* g) {
+	/*
+		Apply external input
+
+		https://en.wikipedia.org/wiki/Ricker_wavelet
+		mexican hat: (2/(sqrt(pow((3*sigma*PI),(1/4))))*(pow(1-pow(x/sigma,2),(exp(pow(-1*x,2)/pow(2*sigma,2))))))
+	*/	
+
+	double new_gc_firing[100];
+	for (int i = 0; i < 100; i++) { // initialize array
+		new_gc_firing[i] = 0.000001;
+	}
+	int pd_i, gc_i;
+	double d, new_firing;
+	double mex_hat; // mexican hat
+	g->speed = 3.7; // ext input speed level
+	g->y_inter = 0.0; // y intercept
+	g->scale = 0.1; //0.1; // multiple synaptic connections scaling factor
+	g->s_1 = 2.0; // sigma_1
+	g->s_2 = g->s_1;
+	g->s_3 = g->s_1;
+	g->m = 1.0; // magnitude variable for mex hat
+
+	speed = g->speed;
+	double y_inter = g->y_inter; // y intercept
+	double scale = g->scale; // multiple synaptic connections scaling factor
+	double s_1 = g->s_1;
+	double s_2 = g->s_2;
+	double s_3 = g->s_3;
+	double m = g->m;
+
+	set_pos(g, direction);
+
+	for (int pdy = 0; pdy < 10; pdy++) {
+		for (int pdx = 0; pdx < 10; pdx++) {
+			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 1) {
+			if (direction == get_pd(pdx, pdy)) {
+				pd_i = (pdy * 10) + pdx;
+				for (int gcy = 0; gcy < 10; gcy++) {
+					for (int gcx = 0; gcx < 10; gcx++) {			
+						gc_i = (gcy * 10) + gcx;
+
+						d = get_distance(pdx, pdy, gcx, gcy, direction);
+
+						if (d < 3.0) {
+							// distance threshold for only local connections
+
+							mex_hat = (2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2)));
+
+							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
+							//new_firing = y_inter + speed * scale * mex_hat;
+							//new_firing = y_inter + scale * mex_hat;
+							//new_firing = y_inter + mex_hat;
+							//new_firing = mex_hat;
+							//new_firing = d;
+
+							if (new_firing < 0) {
+								new_firing = 0.00001; // avoid negative
+							}
+
+							new_gc_firing[gc_i] = new_gc_firing[gc_i] + new_firing;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 100; i++) {
+		gc_firing[i] = new_gc_firing[i];
+	}
+}
+
 int main() {
 	int layer_x = 10;
 	int layer_y = 10;
@@ -266,7 +273,7 @@ int main() {
 	
 	init_firing(gc_firing, layer_size);
 
-	for (int t = 0; t < run_time; t++) {
+	for (int t = 0; t <= run_time; t++) {
 		move_path(gc_firing, t, &g);
 
 		print_firing(layer_x, layer_y, gc_firing, t, &g);
