@@ -189,6 +189,60 @@ void move_path(double *gc_firing, int t, G* g) {
 	else if (t == 23) {
 		ext_input('u', speed, gc_firing, g);
 	}
+	else if (t == 24) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 25) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 26) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 27) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 28) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 29) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 30) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 31) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 32) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 33) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 34) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 35) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 36) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 37) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 38) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 39) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 40) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 41) {
+		ext_input('r', speed, gc_firing, g);
+	}
 }
 
 void ext_input(char direction, double speed, double *gc_firing, G* g) {
@@ -206,14 +260,14 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	g->speed = .53; // ext input speed level
+	g->speed = .531467; // ext input speed level
 	g->y_inter = -0.5; // y intercept
 	g->scale = 1.0; //0.1; // multiple synaptic connections scaling factor
 	g->s_1 = 2.0; // sigma_1
 	g->s_2 = g->s_1;
 	g->s_3 = g->s_1;
 	g->m = 1.0; // magnitude variable for mex hat
-	g->run_time = 23;
+	g->run_time = 42;
 
 	speed = g->speed;
 	double y_inter = g->y_inter; // y intercept
