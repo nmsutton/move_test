@@ -205,7 +205,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	g->speed = 3.7; // ext input speed level
+	g->speed = 3.5; // ext input speed level
 	g->y_inter = 0.0; // y intercept
 	g->scale = 0.1; //0.1; // multiple synaptic connections scaling factor
 	g->s_1 = 2.0; // sigma_1
