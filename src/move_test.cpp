@@ -6,27 +6,13 @@
 #include <cstring>
 #include <sstream>
 #include <iostream>
+#include "move_path.cpp"
 
 #define PI 3.14159265
 
 using namespace std;
 
 string to_string(double x);
-
-struct G {
-	// general parameters
-
-	double speed; // ext input speed level
-	double y_inter; // y intercept
-	double scale; //0.1; // multiple synaptic connections scaling factor
-	double s_1; // sigma_1
-	double s_2;
-	double s_3;
-	double m; // magnitude variable for mex hat
-	int pos[2] = {1,1};
-	int run_time = 23; // sim run time
-	char last_dir; // last dir command
-};
 
 string to_string(double x)
 {
@@ -147,104 +133,6 @@ void set_pos(G* g, char direction) {
 	g->last_dir=direction;
 }
 
-void ext_input(char direction, double speed, double *gc_firing, G* g);
-
-void move_path(double *gc_firing, int t, G* g) {
-	// movement path
-
-	double speed = g->speed;
-	if (t == 1) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 3) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 5) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 7) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 9) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 11) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 13) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 15) {
-		ext_input('l', speed, gc_firing, g);
-	}
-	else if (t == 17) {
-		ext_input('l', speed, gc_firing, g);
-	}
-	else if (t == 19) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 21) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 23) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 24) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 25) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 26) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 27) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 28) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 29) {
-		ext_input('l', speed, gc_firing, g);
-	}
-	else if (t == 30) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 31) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 32) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 33) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 34) {
-		ext_input('l', speed, gc_firing, g);
-	}
-	else if (t == 35) {
-		ext_input('l', speed, gc_firing, g);
-	}
-	else if (t == 36) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 37) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 38) {
-		ext_input('r', speed, gc_firing, g);
-	}
-	else if (t == 39) {
-		ext_input('u', speed, gc_firing, g);
-	}
-	else if (t == 40) {
-		ext_input('d', speed, gc_firing, g);
-	}
-	else if (t == 41) {
-		ext_input('r', speed, gc_firing, g);
-	}
-}
-
 void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	/*
 		Apply external input
@@ -260,14 +148,14 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	g->speed = .531467; // ext input speed level
+	g->speed = .5315413; // ext input speed level
 	g->y_inter = -0.5; // y intercept
 	g->scale = 1.0; //0.1; // multiple synaptic connections scaling factor
 	g->s_1 = 2.0; // sigma_1
 	g->s_2 = g->s_1;
 	g->s_3 = g->s_1;
 	g->m = 1.0; // magnitude variable for mex hat
-	g->run_time = 42;
+	g->run_time = 52;
 
 	speed = g->speed;
 	double y_inter = g->y_inter; // y intercept
