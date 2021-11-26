@@ -24,6 +24,7 @@ struct G {
 	double s_3;
 	double m; // magnitude variable for mex hat
 	int pos[2] = {1,1};
+	int run_time = 23; // sim run time
 	char last_dir; // last dir command
 };
 
@@ -205,13 +206,14 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	g->speed = 3.5; // ext input speed level
-	g->y_inter = 0.0; // y intercept
-	g->scale = 0.1; //0.1; // multiple synaptic connections scaling factor
+	g->speed = .53; // ext input speed level
+	g->y_inter = -0.5; // y intercept
+	g->scale = 1.0; //0.1; // multiple synaptic connections scaling factor
 	g->s_1 = 2.0; // sigma_1
 	g->s_2 = g->s_1;
 	g->s_3 = g->s_1;
 	g->m = 1.0; // magnitude variable for mex hat
+	g->run_time = 23;
 
 	speed = g->speed;
 	double y_inter = g->y_inter; // y intercept
@@ -267,13 +269,12 @@ int main() {
 	int layer_x = 10;
 	int layer_y = 10;
 	int layer_size = layer_x * layer_y;
-	int run_time = 23;
 	double gc_firing[layer_size];
 	struct G g;
 	
 	init_firing(gc_firing, layer_size);
 
-	for (int t = 0; t <= run_time; t++) {
+	for (int t = 0; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);
 
 		print_firing(layer_x, layer_y, gc_firing, t, &g);
