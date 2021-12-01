@@ -146,6 +146,24 @@ void init_firing(double *gc_firing, int layer_size) {
 	gc_firing[20] = w3;
 	gc_firing[2] = w3;
 	gc_firing[22] = w3;
+
+	/*w1 = 2.000001;
+	w2 = 1.748563;
+ 	w3 = 1.473271;
+ 	scaling_factor = 0.25;
+ 	w1 = w1 * scaling_factor;
+ 	w2 = w2 * scaling_factor;
+ 	w3 = w3 * scaling_factor;
+
+	gc_firing[51] = w1;
+	gc_firing[41] = w2;
+	gc_firing[50] = w2;
+	gc_firing[52] = w2;
+	gc_firing[61] = w2;
+	gc_firing[40] = w3;
+	gc_firing[60] = w3;
+	gc_firing[42] = w3;
+	gc_firing[62] = w3;*/
 }
 
 void set_pos(G* g, char direction) {
@@ -167,18 +185,18 @@ void set_pos(G* g, char direction) {
 
 double get_mex_hat(G* g, double d) {
 	double mex_hat;
-	g->s_1 = 2.5; // sigma_1
-	g->s_2 = g->s_1;
-	g->s_3 = g->s_1;
+	g->s_1 = 2.5*2.4; // sigma_1
+	g->s_2 = 2.5;//g->s_1;
+	g->s_3 = 2.5;//g->s_1;
 	g->m = 1.0; // magnitude variable for mex hat
 	double s_1 = g->s_1;
 	double s_2 = g->s_2;
 	double s_3 = g->s_3;
 	double m = g->m;
-	double scaling_factor = 2.35; // used to retain equalibrium over movements
-	double multiple_synapse = 0.1; // reduces each connection due to multiple connections
+	double scaling_factor = 1;//6.45; // used to retain equalibrium over movements
+	double multiple_synapse = 1;//0.1; // reduces each connection due to multiple connections
 
-	mex_hat = scaling_factor * multiple_synapse * ((2/(sqrt(pow((3*s_1*PI),(1/4)))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2))));
+	mex_hat = scaling_factor * multiple_synapse * ((2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2))));
 
 	return mex_hat;
 }
