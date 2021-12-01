@@ -149,22 +149,16 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	int pd_i, gc_i;
 	double d, new_firing;
 	double mex_hat; // mexican hat
-	g->speed = 1; // ext input speed level
-	g->y_inter = 0.0; // y intercept
-	g->scale = 1.0; //0.1; // multiple synaptic connections scaling factor
-	g->s_1 = 1.8*1.3; // sigma_1
+	g->y_inter = -0.5; // y intercept
+	g->s_1 = 1.8*.404318655; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	g->s_2 = 1.8; //g->s_1;
 	g->s_3 = 1.8; //g->s_1;
-	g->m = 1.0; // magnitude variable for mex hat
 	g->run_time = 52;
 
-	speed = g->speed;
-	double y_inter = g->y_inter; // y intercept
-	double scale = g->scale; // multiple synaptic connections scaling factor
+	double y_inter = g->y_inter;
 	double s_1 = g->s_1;
 	double s_2 = g->s_2;
 	double s_3 = g->s_3;
-	double m = g->m;
 
 	set_pos(g, direction);
 
@@ -179,17 +173,11 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 						d = get_distance(pdx, pdy, gcx, gcy, direction);
 
-						if (d < 3.0) {
-							// distance threshold for only local connections
+						if (d < g->dist_thresh) { 
 
-							mex_hat = (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(pow(-1*(m*d),2)/pow(2*s_3,2)));
+							mex_hat = (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(d/s_2,2))*(exp(pow(-1*d,2)/pow(2*s_3,2)));
 
-							new_firing = y_inter + gc_firing[pd_i] * speed * scale * mex_hat;
-							//new_firing = y_inter + speed * scale * mex_hat;
-							//new_firing = y_inter + scale * mex_hat;
-							//new_firing = y_inter + mex_hat;
-							//new_firing = mex_hat;
-							//new_firing = d;
+							new_firing = y_inter + gc_firing[pd_i] * mex_hat;
 
 							if (new_firing < 0) {
 								new_firing = 0.00001; // avoid negative

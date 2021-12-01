@@ -11,6 +11,7 @@ struct G {
 	int pos[2] = {1,1};
 	int run_time = 23; // sim run time
 	char last_dir; // last dir command
+	double dist_thresh = 3.0; // distance threshold for only local connections
 };
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);
