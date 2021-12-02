@@ -8,6 +8,11 @@
 #include <iostream>
 #include "move_path.cpp"
 
+// for file out
+#include <iostream>
+#include <fstream>
+#include <string> // for filename
+
 #define PI 3.14159265
 
 using namespace std;
@@ -21,7 +26,7 @@ string to_string(double x)
   return ss.str();
 }
 
-string to_string(int x)
+string int_to_string(int x)
 {
   ostringstream ss;
   ss << x;
@@ -34,6 +39,35 @@ char get_pd(int x, int y) {
 	int gc_ind = (y * 10) + x;
 
 	return pd[gc_ind];
+}
+
+void write_firing(int layer_x, int layer_y, double *gc_firing, int t, G* g) {
+	ofstream output_file;
+	string filename = "output/firing_t" + int_to_string(t) + ".csv";
+	output_file.open(filename);
+
+	int layer_size = layer_x * layer_y;
+	int gc_ind = 0; // grid cell index
+	double temp;
+
+	if (t != 0) {
+		for (int i = (layer_x - 1); i >= 0; i--) {
+			for (int j = 0; j < layer_y; j++) {
+				gc_ind = (i * layer_x) + j;
+
+				output_file << gc_firing[gc_ind];
+
+				if (j != (layer_y -1)) {
+					output_file << ",";
+				}
+			}
+			if (i != 0) {
+				output_file << "\n";
+			}
+		}
+	}
+
+  output_file.close();
 }
 
 void print_firing(int layer_x, int layer_y, double *gc_firing, int t, G* g) {
@@ -209,6 +243,8 @@ int main() {
 		move_path(gc_firing, t, &g);
 
 		print_firing(layer_x, layer_y, gc_firing, t, &g);
+
+		write_firing(layer_x, layer_y, gc_firing, t, &g);		
 	}
 
 	return 0;
