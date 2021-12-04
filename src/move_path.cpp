@@ -12,9 +12,10 @@ struct G {
 	int run_time = 23; // sim run time
 	char last_dir; // last dir command
 	double dist_thresh = 5.0; // distance threshold for only local connections
-	int layer_x = 26;
-	int layer_y = 26;
-	int layer_size = layer_x * layer_y;
+	static const int layer_x = 26;
+	static const int layer_y = 26;
+	static const int layer_size = layer_x * layer_y;
+	double weights[layer_size][layer_size];
 };
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);
