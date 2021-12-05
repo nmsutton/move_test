@@ -199,16 +199,63 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	return d;
 }
 
-void init_firing(double *gc_firing, int layer_size) {
+double get_mex_hat(double d, G *g) {
+	double y_inter = g->y_inter;
+	double s_1 = g->s_1;
+	double s_2 = g->s_2;
+	double s_3 = g->s_3;
+	double m = g->m;
+	double scale = g->scale;
+
+	double mex_hat = scale * (y_inter + (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(m*pow(d,2)/(2*pow(s_3,2))))));
+
+	return mex_hat;
+}
+
+void init_firing(double *gc_firing, G *g) {
 	// initialize firing
 
+	int i;
+	double mex_hat, d;
 	double w1 = 2.000001;
 	double w2 = 1.748563;
  	double w3 = 1.473271;
  	double scaling_factor = 0.5;
-	for (int i = 0; i < layer_size; i++) {
-		gc_firing[i] = 1.0;
+	double weights_bumps[g->layer_size];
+	for (int i = 0; i < g->layer_size; i++) {
+		weights_bumps[g->layer_size] = 0.0;
 	}
+	int num_bumps = 4;
+	double bump_pos[num_bumps][2] = {{5,5},{5,15},{15,5},{15,15}};
+	g->y_inter = 1.0; // y intercept
+	g->s_1 = 2*.1; // sigma_1. Note: specific value used for equalibrium of weights over time.
+	g->s_2 = 2;
+	g->s_3 = 2;
+	g->m=1;
+	g->scale=0.25;
+	g->run_time = 1;
+
+	// find weights for the starting bumps
+	for (int y = 0; y < g->layer_y; y++) {
+		for (int x = 0; x < g->layer_x; x++) {
+			for (int b = 0; b < num_bumps; b++) {
+				i = (y * g->layer_x) + x;
+
+				d = get_distance(x, y, bump_pos[b][0], bump_pos[b][1], 'n', g);
+
+				if (d < g->dist_thresh) {
+					mex_hat = get_mex_hat(d, g);
+
+					weights_bumps[i] = weights_bumps[i] + mex_hat;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < g->layer_size; i++) {
+		gc_firing[i] = 1.0 * weights_bumps[i];
+	}
+
 	/*gc_firing[11] = w1;
 	gc_firing[1] = w2;
 	gc_firing[10] = w2;
@@ -253,11 +300,11 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	double d, new_firing, weight_sum, pd_fac;
 	double mex_hat; // mexican hat
 	g->y_inter = 1.0; // y intercept
-	g->s_1 = 2*.5; // sigma_1. Note: specific value used for equalibrium of weights over time.
+	g->s_1 = 2*.1; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	g->s_2 = 2;
 	g->s_3 = 2;
-	g->m=0.8;
-	g->scale=1.0;
+	g->m=1;
+	g->scale=0.25;
 	g->run_time = 1;
 
 	double y_inter = g->y_inter;
@@ -273,9 +320,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		for (int pdx = 0; pdx < g->layer_x; pdx++) {
 			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 1) {
 			//if (direction == get_pd(pdx, pdy)) {
-			//if (true) {
+			if (true) {
 			//get_pd(pdx, pdy);
-			if (pdx == 4 && pdy == 4) {
+			//if (pdx == 4 && pdy == 4) {
 				pd_i = (pdy * g->layer_x) + pdx;
 				for (int gcy = 0; gcy < g->layer_y; gcy++) {
 					for (int gcx = 0; gcx < g->layer_x; gcx++) {			
@@ -284,8 +331,8 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 						d = get_distance(pdx, pdy, gcx, gcy, direction, g);
 
 						if (d < g->dist_thresh) { 
-
-							mex_hat = y_inter + (scale * (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(m*pow(d,2)/(2*pow(s_3,2))))));
+							mex_hat = get_mex_hat(d, g);
+							
 							//printf("%f + (2/(sqrt(3*%f*pow(PI,1/4))))*(1-pow((%f*%f)/%f,2))*(exp(-1*(%f*pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,s_1,m,d,s_2,m,d,s_3);
 							//new_firing = y_inter + gc_firing[pd_i] * mex_hat;
 							new_firing = mex_hat;
@@ -315,7 +362,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		weight_sum = 0;
 		for (int pd_i = 0; pd_i < g->layer_size; pd_i++) {
-			weight_sum = weight_sum + g->weights[pd_i][gc_i];
+			weight_sum = weight_sum + (gc_firing[gc_i] * g->weights[pd_i][gc_i]);
 		}
 		//printf("%d: %f ",gc_i,weight_sum);
 
@@ -351,10 +398,10 @@ int main() {
 		}
 	}
 	
-	init_firing(gc_firing, g.layer_size);
+	init_firing(gc_firing, &g);
 
 	for (int t = 0; t <= g.run_time; t++) {
-		move_path2(gc_firing, t, &g);
+		//move_path2(gc_firing, t, &g);
 
 		print_firing(gc_firing, t, &g);
 

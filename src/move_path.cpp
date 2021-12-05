@@ -9,11 +9,11 @@ struct G {
 	double s_3;
 	double m; // magnitude variable for mex hat
 	int pos[2] = {1,1};
-	int run_time = 23; // sim run time
+	int run_time = 3; // sim run time
 	char last_dir; // last dir command
 	double dist_thresh = 5.0; // distance threshold for only local connections
-	static const int layer_x = 26;
-	static const int layer_y = 26;
+	static const int layer_x = 20;//26;
+	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;
 	double weights[layer_size][layer_size];
 };
