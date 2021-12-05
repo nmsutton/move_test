@@ -144,8 +144,8 @@ void print_firing(double *gc_firing, int t, G* g) {
 	int gc_ind = 0; // grid cell index
 	double temp;
 
-	if (t != 0) {
-	//if (true) {
+	//if (t != 0) {
+	if (true) {
 		cout << "time: " << t << " sec\n";
 
 		for (int i = (layer_x - 1); i >= 0; i--) {
@@ -232,13 +232,14 @@ void init_firing(double *gc_firing, G *g) {
 	}
 	int num_bumps = 4;
 	double bump_pos[num_bumps][2] = {{5,5},{5,15},{15,5},{15,15}};
-	g->y_inter = 1.0; // y intercept
-	g->s_1 = 2*.1; // sigma_1. Note: specific value used for equalibrium of weights over time.
-	g->s_2 = 2;
-	g->s_3 = 2;
-	g->m=1;
-	g->scale=0.25;
-	g->run_time = 1;
+	//double bump_pos[num_bumps][2] = {{4,4},{4,14},{14,4},{14,14}};
+	g->y_inter = g->y_inter_init; // y intercept
+	g->s_1 = g->s_1_init; // sigma_1. Note: specific value used for equalibrium of weights over time.
+	g->s_2 = g->s_2_init;
+	g->s_3 = g->s_3_init;
+	g->m = g->m_init;
+	g->scale = g->scale_init;
+	g->run_time = g->run_time_init;
 
 	// find weights for the starting bumps
 	for (int y = 0; y < g->layer_y; y++) {
@@ -311,14 +312,6 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	double weight_sym; // weight symetrical
 	double weight_asym; // weight asymetrical
 	double vel_in = 0.0; // velocity input
-	g->speed = 0.3;
-	g->y_inter = 1.0; // y intercept
-	g->s_1 = 2*.1; // sigma_1. Note: specific value used for equalibrium of weights over time.
-	g->s_2 = 2;
-	g->s_3 = 2;
-	g->m=1;
-	g->scale=0.25;
-	g->run_time = 5;
 
 	// clear weights
 	for (int i = 0; i < g->layer_size; i++) {
@@ -327,13 +320,20 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		}
 	}
 
-	vel_in = g->speed;
-	double y_inter = g->y_inter;
-	double s_1 = g->s_1;
-	double s_2 = g->s_2;
-	double s_3 = g->s_3;
-	double m = g->m;
-	double scale = g->scale;
+	vel_in = g->speed_syn;
+	double y_inter = g->y_inter_syn;
+	double s_1 = g->s_1_syn;
+	double s_2 = g->s_2_syn;
+	double s_3 = g->s_3_syn;
+	double m = g->m_syn;
+	double scale = g->scale_syn;
+	g->y_inter = g->y_inter_syn;
+	g->s_1 = g->s_1_syn;
+	g->s_2 = g->s_2_syn;
+	g->s_3 = g->s_3_syn;
+	g->m = g->m_syn;
+	g->scale = g->scale_syn;
+	g->run_time = g->run_time_syn;
 
 	double w_scale_f = 0.16; // multiple weight scaling factor to avoid weights increasing too much
 
@@ -358,6 +358,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 							mex_hat = get_mex_hat(d, g);							
 							mex_hat = mex_hat * g->a_sym; // symmetric amplitude factor
 							//printf("%f + (2/(sqrt(3*%f*pow(PI,1/4))))*(1-pow((%f*%f)/%f,2))*(exp(-1*(%f*pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,s_1,m,d,s_2,m,d,s_3);
+							weight_sym = gc_firing[gc_i] * mex_hat;
 							weight_sym = mex_hat;
 						}
 
@@ -417,9 +418,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		}
 
 		//new_firing = g->tau * weight_sum + vel_in;
-		new_firing = weight_sum;
+		//new_firing = weight_sum;
 		//new_firing = gc_firing[gc_i];
-		//new_firing = g->tau * weight_sum + (pd_fac * vel_in);
+		new_firing = g->tau * weight_sum + (pd_fac * vel_in);
 		//new_firing = (pd_fac * vel_in);
 
 		//if (new_firing < 0) {new_firing = 0.000001;}
@@ -433,6 +434,8 @@ int main() {
 	double gc_firing[g.layer_size];
 	
 	init_firing(gc_firing, &g);
+
+	print_firing(gc_firing, 0, &g);
 
 	for (int t = 0; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);

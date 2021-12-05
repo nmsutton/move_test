@@ -1,15 +1,28 @@
 struct G {
 	// general parameters
 
-	double speed; // ext input speed level
-	double y_inter; // y intercept
-	double scale; //0.1; // multiple synaptic connections scaling factor
-	double s_1; // sigma_1
-	double s_2;
-	double s_3;
-	double m; // magnitude variable for mex hat
+	// values for synapse activites
+	double speed_syn = 0.3; // ext input speed level
+	double y_inter_syn = 1.0; // y intercept
+	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
+	double s_1_syn = 2*.1; // sigma_1
+	double s_2_syn = 2;
+	double s_3_syn = 2;
+	double m_syn = 1; // magnitude variable for mex hat
+	double run_time_syn = 5; // sim run time
+
+	// initial values
+	double y_inter_init = y_inter_syn; // y intercept
+	double scale_init=scale_syn;	
+	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
+	double s_2_init = s_2_syn;
+	double s_3_init = s_3_syn;
+	double m_init=m_syn;
+	double run_time_init = 1;
+
+	double speed, y_inter, scale, s_1, s_2, s_3, m, run_time;
+
 	int pos[2] = {1,1};
-	int run_time = 5; // sim run time
 	char last_dir; // last direction command
 	double tau = .8; // time constant; TODO: add diff equ for more realistic one
 	double dist_thresh = 5.0; // distance threshold for only local connections
@@ -18,7 +31,7 @@ struct G {
 	static const int layer_size = layer_x * layer_y;
 	double weights[layer_size][layer_size];
 	double a_sym = 0.5; // alpha sym
-	double a_asym = -.55;//-1.5; // alpha asym
+	double a_asym = .15;//-1.5; // alpha asym
 };
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);
@@ -28,13 +41,22 @@ void move_path(double *gc_firing, int t, G* g) {
 
 	double speed = g->speed;
 	if (t == 1) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 2) {
+		ext_input('d', speed, gc_firing, g);
 	}
 	else if (t == 3) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
+	else if (t == 3) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 4) {
+		ext_input('d', speed, gc_firing, g);
+	}	
 	else if (t == 5) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
 	else if (t == 7) {
 		ext_input('r', speed, gc_firing, g);
