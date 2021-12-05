@@ -152,13 +152,17 @@ void print_firing(double *gc_firing, int t, G* g) {
 			for (int j = 0; j < layer_y; j++) {
 				gc_ind = (i * layer_x) + j;
 
-				printf("[%.1f]",gc_firing[gc_ind]);
+				printf("|");
+				if (gc_firing[gc_ind] >= 0) {
+					//printf("+");
+				}
+				printf("%.2f %c",abs(gc_firing[gc_ind]),get_pd(i,j));
 
 				/*if (g->pos[0] == j && g->pos[1] == i) {
 					printf("(%c)",g->last_dir);
 				}*/
 
-				printf(" ");
+				//printf(" ");
 			}
 			cout << "\n";
 		}
@@ -217,6 +221,7 @@ void init_firing(double *gc_firing, G *g) {
 
 	int i;
 	double mex_hat, d;
+	double init_f = 1.0; // initial firing amount
 	double w1 = 2.000001;
 	double w2 = 1.748563;
  	double w3 = 1.473271;
@@ -253,7 +258,7 @@ void init_firing(double *gc_firing, G *g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		gc_firing[i] = 1.0 * weights_bumps[i];
+		gc_firing[i] = init_f * weights_bumps[i];
 	}
 
 	/*gc_firing[11] = w1;
@@ -276,11 +281,15 @@ void set_pos(G* g, char direction) {
 	}
 	else if (direction == 'r') {
 		g->pos[0]++; 
-
 	}
 	else if (direction == 'l') {
 		g->pos[0]--; 
 	}
+
+	if (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r') {
+		cout << " move: " << direction;
+	}
+
 	g->last_dir=direction;
 }
 
@@ -297,16 +306,28 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		new_gc_firing[i] = 0.000001;
 	}
 	int pd_i, gc_i;
-	double d, new_firing, weight_sum, pd_fac;
+	double d, new_firing, new_weight, weight_sum, pd_fac;
 	double mex_hat; // mexican hat
+	double weight_sym; // weight symetrical
+	double weight_asym; // weight asymetrical
+	double vel_in = 0.0; // velocity input
+	g->speed = 0.3;
 	g->y_inter = 1.0; // y intercept
 	g->s_1 = 2*.1; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	g->s_2 = 2;
 	g->s_3 = 2;
 	g->m=1;
 	g->scale=0.25;
-	g->run_time = 1;
+	g->run_time = 5;
 
+	// clear weights
+	for (int i = 0; i < g->layer_size; i++) {
+		for (int j = 0; j < g->layer_size; j++) {
+			g->weights[i][j] = 0.0;
+		}
+	}
+
+	vel_in = g->speed;
 	double y_inter = g->y_inter;
 	double s_1 = g->s_1;
 	double s_2 = g->s_2;
@@ -314,47 +335,51 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	double m = g->m;
 	double scale = g->scale;
 
+	double w_scale_f = 0.16; // multiple weight scaling factor to avoid weights increasing too much
+
 	set_pos(g, direction);
 
+	cout << "\n";
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
 		for (int pdx = 0; pdx < g->layer_x; pdx++) {
 			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 1) {
 			//if (direction == get_pd(pdx, pdy)) {
 			if (true) {
 			//get_pd(pdx, pdy);
-			//if (pdx == 4 && pdy == 4) {
+			//if (pdx == 4 && pdy == 5) {
 				pd_i = (pdy * g->layer_x) + pdx;
 				for (int gcy = 0; gcy < g->layer_y; gcy++) {
 					for (int gcx = 0; gcx < g->layer_x; gcx++) {			
 						gc_i = (gcy * g->layer_x) + gcx;
 
-						d = get_distance(pdx, pdy, gcx, gcy, direction, g);
+						// find weight_sym
+						d = get_distance(pdx, pdy, gcx, gcy, 'n', g); // no pd bias
+						if (d < g->dist_thresh) { 
+							mex_hat = get_mex_hat(d, g);							
+							mex_hat = mex_hat * g->a_sym; // symmetric amplitude factor
+							//printf("%f + (2/(sqrt(3*%f*pow(PI,1/4))))*(1-pow((%f*%f)/%f,2))*(exp(-1*(%f*pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,s_1,m,d,s_2,m,d,s_3);
+							weight_sym = mex_hat;
+						}
 
+						// find weight_asym
+						d = get_distance(pdx, pdy, gcx, gcy, get_pd_opp(pd_i, g), g); // with pd bias
 						if (d < g->dist_thresh) { 
 							mex_hat = get_mex_hat(d, g);
-							
-							//printf("%f + (2/(sqrt(3*%f*pow(PI,1/4))))*(1-pow((%f*%f)/%f,2))*(exp(-1*(%f*pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,s_1,m,d,s_2,m,d,s_3);
-							//new_firing = y_inter + gc_firing[pd_i] * mex_hat;
-							new_firing = mex_hat;
-
-							if (new_firing < 0) {
-								//new_firing = 0.00001; // avoid negative
+							if (mex_hat < 0) {
+								mex_hat = 0.00001; // avoid negative
 							}
-
-							//new_gc_firing[gc_i] = new_gc_firing[gc_i] + new_firing;
-							new_gc_firing[gc_i] = new_firing;
-
-							g->weights[pd_i][gc_i] = mex_hat;
+							mex_hat = mex_hat * g->a_asym; // asymmetric amplitude factor; for adjustment to inhibitory					
+							weight_asym = gc_firing[gc_i] * mex_hat;
 						}
+
+						g->weights[pd_i][gc_i] = (weight_sym + weight_asym) * w_scale_f;
+						//g->weights[pd_i][gc_i] = weight_asym * w_scale_f;
+						//g->weights[pd_i][gc_i] = weight_sym * w_scale_f;
 					}
 				}
 			}
 		}
 	}
-
-	/*for (int i = 0; i < g->layer_size; i++) {
-		gc_firing[i] = new_gc_firing[i];
-	}*/
 
 	/*
 		tau is used for reducing the firing over time
@@ -363,24 +388,39 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		weight_sum = 0;
 		for (int pd_i = 0; pd_i < g->layer_size; pd_i++) {
 			weight_sum = weight_sum + (gc_firing[gc_i] * g->weights[pd_i][gc_i]);
+			//weight_sum = weight_sum + g->weights[pd_i][gc_i];
+
+			if (false && pd_i == 104) {
+				cout << "[";
+				if (g->weights[pd_i][gc_i] >= 0) {
+					cout << "+";
+				}
+				printf("%.2f]",g->weights[pd_i][gc_i]);
+				//printf("%d]",pd_i);
+				if ((gc_i+1) % g->layer_x == 0 && gc_i != 0) {
+					cout << "\n";
+				}
+			}
 		}
 		//printf("%d: %f ",gc_i,weight_sum);
 
 		if (get_pd(gc_i, g) == direction) {
-			pd_fac = 2;
+			pd_fac = 1.0;//2;
+			//cout << "test";
 		}
 		else if(get_pd_opp(gc_i, g) == direction) {
-			pd_fac = .5;
+			pd_fac = -1.0;//.5;
+			//cout << "test";
 		}
 		else {
-			pd_fac = 1.0;
+			pd_fac = 0.0;//1.0;
 		}
 
-		//new_firing = g->tau * ((gc_firing[gc_i] * weight_sum) + vel_in);
-		//new_firing = g->tau * ((gc_firing[gc_i] * weight_sum));
+		//new_firing = g->tau * weight_sum + vel_in;
 		new_firing = weight_sum;
 		//new_firing = gc_firing[gc_i];
-		//new_firing = g->tau * ((gc_firing[gc_i] * weight_sum) + (pd_fac * vel_in));
+		//new_firing = g->tau * weight_sum + (pd_fac * vel_in);
+		//new_firing = (pd_fac * vel_in);
 
 		//if (new_firing < 0) {new_firing = 0.000001;}
 
@@ -391,17 +431,11 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 int main() {
 	struct G g;	
 	double gc_firing[g.layer_size];
-	// init weights
-	for (int i = 0; i < g.layer_size; i++) {
-		for (int j = 0; j < g.layer_size; j++) {
-			g.weights[i][j] = 0.0;
-		}
-	}
 	
 	init_firing(gc_firing, &g);
 
 	for (int t = 0; t <= g.run_time; t++) {
-		//move_path2(gc_firing, t, &g);
+		move_path(gc_firing, t, &g);
 
 		print_firing(gc_firing, t, &g);
 

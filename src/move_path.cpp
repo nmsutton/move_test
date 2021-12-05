@@ -9,13 +9,16 @@ struct G {
 	double s_3;
 	double m; // magnitude variable for mex hat
 	int pos[2] = {1,1};
-	int run_time = 3; // sim run time
-	char last_dir; // last dir command
+	int run_time = 5; // sim run time
+	char last_dir; // last direction command
+	double tau = .8; // time constant; TODO: add diff equ for more realistic one
 	double dist_thresh = 5.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;
 	double weights[layer_size][layer_size];
+	double a_sym = 0.5; // alpha sym
+	double a_asym = -.55;//-1.5; // alpha asym
 };
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);
@@ -185,6 +188,9 @@ void move_path(double *gc_firing, int t, G* g) {
 	}
 	else if (t == 65) {
 		ext_input('r', speed, gc_firing, g);
+	}	
+	else {
+		ext_input('n', speed, gc_firing, g);
 	}
 }
 
@@ -194,7 +200,7 @@ void move_path2(double *gc_firing, int t, G* g) {
 	double speed = g->speed;
 	if (t == 1) {
 		ext_input('n', speed, gc_firing, g);
-	}
+	}	
 	else if (t == 3) {
 		ext_input('n', speed, gc_firing, g);
 	}
@@ -352,6 +358,9 @@ void move_path2(double *gc_firing, int t, G* g) {
 		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 65) {
+		ext_input('n', speed, gc_firing, g);
+	}
+	else {
 		ext_input('n', speed, gc_firing, g);
 	}
 }
