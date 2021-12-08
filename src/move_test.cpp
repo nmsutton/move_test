@@ -346,10 +346,32 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	double new_firing, new_weight, weight_sum, pd_fac;
 	double new_firing_group[g->layer_size];
+	for (int i = 0; i < g->layer_size; i++) {
+		new_firing_group[g->layer_size] = 0;
+	}
 
 	set_pos(g, direction);
 
 	cout << "\n";
+
+	/*
+		apply ext input first
+	*/
+	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
+		if (get_pd(gc_i, g) == direction) {
+			pd_fac = 1.0;//2;
+			//cout << "test";
+		}
+		else if(get_pd_opp(gc_i, g) == direction) {
+			pd_fac = 0.0;//-1.0;//.5;
+			//cout << "test";
+		}
+		else {
+			pd_fac = 0.0;//1.0;
+		}
+
+		gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
+	}
 
 	/*
 		tau is used for reducing the firing over time
@@ -364,50 +386,42 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			//cout << "|" << gc_firing[gc_i] << "*" << g->weights[pd_i][gc_i];
 			//weight_sum = weight_sum + g->weights[pd_i][gc_i];
 
-			/*if (gc_i == 105) {
-				cout << "|";
+			/*if (new_weight < 0) {
+				new_weight = 0.00001; // avoid negative
+			}*/
+
+			if (gc_i == 105) {
+				//cout << "|";
 				//if (g->weights[pd_i][gc_i] >= 0) {
 				//	cout << "+";
 				//}
-				printf("%.2f",abs(g->weights[gc_i][pd_i]));
+				//printf("%f * %f + ",gc_firing[pd_i],g->weights[gc_i][pd_i]);
+				cout << "|" << get_pd(gc_i, g);
 				//printf("%.1f%.2f",gc_firing[gc_i],abs(g->weights[pd_i][gc_i]));
 				//printf("%d]",pd_i);
 				if ((pd_i+1) % g->layer_x == 0) {
 					cout << "\n";
 				}
-			}*/
-		}
-		//printf("%d: %f ",gc_i,weight_sum);
-
-		if (get_pd(gc_i, g) == direction) {
-			pd_fac = 1.0;//2;
-			//cout << "test";
-		}
-		else if(get_pd_opp(gc_i, g) == direction) {
-			pd_fac = 0.0;//-1.0;//.5;
-			//cout << "test";
-		}
-		else {
-			pd_fac = 0.0;//1.0;
+			}
 		}
 
-		//new_firing = g->tau * weight_sum + vel_in;
-		//new_firing = weight_sum;
-		//new_firing = gc_firing[gc_i] + (pd_fac * g->speed_syn);
-		//new_firing = g->tau * weight_sum + (pd_fac * g->speed_syn);
-		new_firing = weight_sum + (pd_fac * g->speed_syn);
-		//new_firing = (pd_fac * g->speed_syn);
-
-		//if (new_firing < 0) {new_firing = 0.000001;}
-
-		//gc_firing[gc_i] = new_firing;
+		if (gc_i == 105) {
+			cout << "\nweight sum: " << weight_sum << "\n";
+		}
 
 		// avoid changing firing until all new firing values are calculated
-		new_firing_group[gc_i] = new_firing;
+		//cout << "|" << new_firing_group[gc_i] << "+" << weight_sum;		
+		//if (get_pd(gc_i, g) == direction) {
+			new_firing_group[gc_i] = weight_sum;
+		//}
+		//else {
+		//	new_firing_group[gc_i] = gc_firing[gc_i];
+		//}
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i];
+		//cout << ":" << new_firing_group[i];
 	}
 }
 
@@ -415,7 +429,7 @@ int main() {
 	struct G g;	
 	double gc_firing[g.layer_size];
 	
-	//init_firing(gc_firing, &g);
+	init_firing(gc_firing, &g);
 
 	set_weights(&g);
 
