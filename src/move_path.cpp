@@ -2,14 +2,14 @@ struct G {
 	// general parameters
 
 	// values for synapse activites
-	double speed_syn = 0.3; // ext input speed level
+	double speed_syn = 1.0;//0.3; // ext input speed level
 	double y_inter_syn = 1.0; // y intercept
 	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
 	double s_1_syn = 2*.1; // sigma_1
 	double s_2_syn = 2;
 	double s_3_syn = 2;
 	double m_syn = 1; // magnitude variable for mex hat
-	double run_time_syn = 5; // sim run time
+	double run_time_syn = 2; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -41,22 +41,22 @@ void move_path(double *gc_firing, int t, G* g) {
 
 	double speed = g->speed;
 	if (t == 1) {
-		ext_input('d', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 2) {
-		ext_input('d', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 3) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 3) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 4) {
-		ext_input('d', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}	
 	else if (t == 5) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 7) {
 		ext_input('r', speed, gc_firing, g);
