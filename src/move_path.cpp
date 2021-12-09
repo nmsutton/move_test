@@ -2,14 +2,14 @@ struct G {
 	// general parameters
 
 	// values for synapse activites
-	double speed_syn = 0;//1.0;//0.3; // ext input speed level
+	double speed_syn = 0.2924981;//1.0;//0.3; // ext input speed level
 	double y_inter_syn = -0.5; // y intercept
 	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
 	double s_1_syn = 1.8*.404318655; // sigma_1
 	double s_2_syn = 1.8;
 	double s_3_syn = 1.8;
 	double m_syn = 1; // magnitude variable for mex hat
-	double run_time_syn = 2; // sim run time
+	double run_time_syn = 100; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -58,29 +58,56 @@ void move_path(double *gc_firing, int t, G* g) {
 	else if (t == 5) {
 		ext_input('r', speed, gc_firing, g);
 	}
+	else if (t == 6) {
+		ext_input('r', speed, gc_firing, g);
+	}
 	else if (t == 7) {
 		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 8) {
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 9) {
 		ext_input('l', speed, gc_firing, g);
 	}
+	else if (t == 10) {
+		ext_input('r', speed, gc_firing, g);
+	}
 	else if (t == 11) {
 		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 12) {
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 13) {
 		ext_input('u', speed, gc_firing, g);
 	}
+	else if (t == 14) {
+		ext_input('r', speed, gc_firing, g);
+	}
 	else if (t == 15) {
 		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 16) {
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 17) {
 		ext_input('l', speed, gc_firing, g);
 	}
+	else if (t == 18) {
+		ext_input('r', speed, gc_firing, g);
+	}
 	else if (t == 19) {
 		ext_input('u', speed, gc_firing, g);
 	}
+	else if (t == 20) {
+		ext_input('r', speed, gc_firing, g);
+	}
 	else if (t == 21) {
 		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 22) {
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 23) {
 		ext_input('u', speed, gc_firing, g);
@@ -210,6 +237,114 @@ void move_path(double *gc_firing, int t, G* g) {
 	}
 	else if (t == 65) {
 		ext_input('r', speed, gc_firing, g);
+	}	
+	else if (t == 66) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 67) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 68) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 69) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 70) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 71) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 72) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 73) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 74) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 75) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 76) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 77) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 78) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 79) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 80) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 81) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 82) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 83) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 84) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 85) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 86) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 87) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 88) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 89) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 90) {
+		ext_input('r', speed, gc_firing, g);
+	}	
+	else if (t == 91) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 92) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 93) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 93) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 94) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 95) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 96) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 97) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 98) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 99) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 100) {
+		ext_input('l', speed, gc_firing, g);
 	}	
 	else {
 		ext_input('n', speed, gc_firing, g);

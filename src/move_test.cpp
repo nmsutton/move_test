@@ -13,6 +13,11 @@
 #include <fstream>
 #include <string> // for filename
 
+// boost odeint
+/*#include <boost/array.hpp>
+#include <boost/numeric/odeint.hpp>
+using namespace boost::numeric::odeint;*/
+
 #define PI 3.14159265
 
 using namespace std;
@@ -159,9 +164,9 @@ void print_firing(double *gc_firing, int t, G* g) {
 				//printf("%.2f %c",abs(gc_firing[gc_ind]),get_pd(i,j));
 				printf("%.2f",abs(gc_firing[gc_ind]));
 
-				/*if (g->pos[0] == j && g->pos[1] == i) {
+				if (g->pos[0] == j && g->pos[1] == i) {
 					printf("(%c)",g->last_dir);
-				}*/
+				}
 
 				//printf(" ");
 			}
@@ -226,19 +231,19 @@ void init_firing(double *gc_firing, G *g) {
 	double w1 = 2.000001;
 	double w2 = 1.748563;
  	double w3 = 1.473271;
- 	double scaling_factor = 0.5;
+ 	double scaling_factor = 2;//0.5;
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = 0.3;
 	}
-	gc_firing[(g->layer_x)+1] = w1;
-	gc_firing[1] = w2;
-	gc_firing[(g->layer_x)+0] = w2;
-	gc_firing[(g->layer_x)+2] = w2;
-	gc_firing[(2*g->layer_x)+1] = w2;
-	gc_firing[0] = w3;
-	gc_firing[(2*g->layer_x)+0] = w3;
-	gc_firing[2] = w3;
-	gc_firing[(2*g->layer_x)+2] = w3;
+	gc_firing[(g->layer_x)+1] = w1*scaling_factor;
+	gc_firing[1] = w2*scaling_factor;
+	gc_firing[(g->layer_x)+0] = w2*scaling_factor;
+	gc_firing[(g->layer_x)+2] = w2*scaling_factor;
+	gc_firing[(2*g->layer_x)+1] = w2*scaling_factor;
+	gc_firing[0] = w3*scaling_factor;
+	gc_firing[(2*g->layer_x)+0] = w3*scaling_factor;
+	gc_firing[2] = w3*scaling_factor;
+	gc_firing[(2*g->layer_x)+2] = w3*scaling_factor;
 }
 
 void init_firing_old(double *gc_firing, G *g) {
@@ -383,7 +388,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	/*
 		apply ext input first
 	*/
-	/*for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
+	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		if (get_pd(gc_i, g) == direction) {
 			pd_fac = 1.0;//2;
 			//cout << "test";
@@ -397,7 +402,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		}
 
 		gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
-	}*/
+	}
 
 	/*
 		tau is used for reducing the firing over time
@@ -457,9 +462,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
 		for (int pdx = 0; pdx < g->layer_x; pdx++) {
 			pd_i = (pdy * g->layer_x) + pdx;
-			if (pd_i == 21) {
+			/*if (pd_i == 21) {
 				printf("gc_firing[pd_i]:%.2f ",gc_firing[pd_i]);
-			}
+			}*/
 			//if (direction == get_pd(pdx, pdy) && pdx == 1 && pdy == 1) {
 			if (direction == get_pd(pdx, pdy)) {
 				for (int gcy = 0; gcy < g->layer_y; gcy++) {
@@ -478,12 +483,12 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 								new_firing = 0.00001; // avoid negative
 							}	
 
-							if (gc_i == 21) {
+							/*if (gc_i == 21) {
 								//printf("%.1f+%.2f*%.2f+",g->y_inter_syn,gc_firing[pd_i],mex_hat);
 								//cout << new_firing << "+";
 								cout << gc_firing[pd_i] << "|";
 								//cout << pdx << " " << pdy << "|";
-							}
+							}*/
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
@@ -494,7 +499,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		gc_firing[i] = new_firing_group[i];
+		gc_firing[i] = new_firing_group[i] * 0.7;
 	}
 }
 
