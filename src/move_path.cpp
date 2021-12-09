@@ -2,12 +2,12 @@ struct G {
 	// general parameters
 
 	// values for synapse activites
-	double speed_syn = 1.0;//0.3; // ext input speed level
-	double y_inter_syn = 1.0; // y intercept
+	double speed_syn = 0;//1.0;//0.3; // ext input speed level
+	double y_inter_syn = -0.5; // y intercept
 	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 2*.1; // sigma_1
-	double s_2_syn = 2;
-	double s_3_syn = 2;
+	double s_1_syn = 1.8*.404318655; // sigma_1
+	double s_2_syn = 1.8;
+	double s_3_syn = 1.8;
 	double m_syn = 1; // magnitude variable for mex hat
 	double run_time_syn = 2; // sim run time
 
@@ -25,7 +25,7 @@ struct G {
 	int pos[2] = {1,1};
 	char last_dir; // last direction command
 	double tau = .8; // time constant; TODO: add diff equ for more realistic one
-	double dist_thresh = 5.0; // distance threshold for only local connections
+	double dist_thresh = 3.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;
@@ -47,25 +47,25 @@ void move_path(double *gc_firing, int t, G* g) {
 		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 3) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 3) {
 		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 4) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}	
 	else if (t == 5) {
 		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 7) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 9) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
 	else if (t == 11) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
 	else if (t == 13) {
 		ext_input('u', speed, gc_firing, g);
