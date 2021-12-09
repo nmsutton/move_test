@@ -7,7 +7,7 @@
 
 clear all;
 clc;
-time=51; % time steps
+time=99; % time steps
 t=[0:0.1:(time*.1)];
 hFigure = figure;
 numberOfFrames = length(t);
@@ -28,13 +28,17 @@ set(gcf, 'nextplot', 'replacechildren');
 % openGL doesn't work and Painters is way too slow.
 set(gcf, 'renderer', 'zbuffer');
 caxis manual;          % allow subsequent plots to use the same color limits
+
+%[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
+%A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
+
 for frameIndex = 1 : numberOfFrames
   filename = strcat('../output/firing_t',int2str(frameIndex),'.csv');
-  [test,delimiterOut]=importdata(filename);
+  [imgfile,delimiterOut]=importdata(filename);
   cla reset;
   % Enlarge figure to full screen.
   %   set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
-  imagesc(test);
+  imagesc(imgfile);
   %imresize(img,[343 434]);
   axis('tight')
   xlabel('neuron position on x axis') 
@@ -46,6 +50,10 @@ for frameIndex = 1 : numberOfFrames
   %zlim([0, 1]);
   caption = sprintf('Grid cell firing amounts, t = %.0f', frameIndex);
   title(caption, 'FontSize', 15);
+  %hold on;
+  %hb = imshow(A, [], 'Colormap', gray(256));
+  %hb = imshow(A);
+  %hb.AlphaData = alpha;
   thisFrame = getframe(gcf);
   myMovie(frameIndex) = thisFrame;
 end

@@ -518,7 +518,7 @@ int main() {
 
 		print_firing(gc_firing, t, &g);
 
-		//write_firing(gc_firing, t, &g);		
+		write_firing(gc_firing, t, &g);		
 	}
 
 	return 0;
