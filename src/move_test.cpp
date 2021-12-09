@@ -499,7 +499,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		gc_firing[i] = new_firing_group[i] * 0.7;
+		gc_firing[i] = new_firing_group[i] * g->tau;
 	}
 }
 

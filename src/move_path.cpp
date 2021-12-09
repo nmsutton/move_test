@@ -24,7 +24,7 @@ struct G {
 
 	int pos[2] = {1,1};
 	char last_dir; // last direction command
-	double tau = .8; // time constant; TODO: add diff equ for more realistic one
+	double tau = .7; // time constant; TODO: add diff equ for more realistic one
 	double dist_thresh = 3.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
