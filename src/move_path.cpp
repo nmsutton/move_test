@@ -2,14 +2,15 @@ struct G {
 	// general parameters
 
 	// values for synapse activites
-	double speed_syn = 0.2924981;//1.0;//0.3; // ext input speed level
+	double speed_syn = 0.4;//0.2924981;//1.0;//0.3; // ext input speed level
+	double tau = .44695;//.7; // time constant; TODO: add diff equ for more realistic one	
 	double y_inter_syn = -0.5; // y intercept
 	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 1.8*.404318655; // sigma_1
-	double s_2_syn = 1.8;
+	double s_1_syn = 0.9;//1.8*.404318655; // sigma_1
+	double s_2_syn = 2.5;//1.8;
 	double s_3_syn = 1.8;
 	double m_syn = 1; // magnitude variable for mex hat
-	double run_time_syn = 100; // sim run time
+	double run_time_syn = 45; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -24,7 +25,6 @@ struct G {
 
 	int pos[2] = {1,1};
 	char last_dir; // last direction command
-	double tau = .7; // time constant; TODO: add diff equ for more realistic one
 	double dist_thresh = 3.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
