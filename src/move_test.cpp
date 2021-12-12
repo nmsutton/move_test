@@ -1,3 +1,10 @@
+/*
+	Author: Nate Sutton 2021
+
+	References:
+	https://en.wikipedia.org/wiki/Gompertz_function
+*/
+
 #include <vector>
 #include <math.h> // for sqrt() and other functions
 
@@ -393,7 +400,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		Apply external input
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat, e;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
 	double new_firing_group[g->layer_size];
@@ -407,6 +414,8 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	g->s_2 = g->s_2_syn;
 	g->s_3 = g->s_3_syn;
 	g->m = g->m_syn;
+
+	e = exp(1); // Euler's number
 
 	set_pos(g, direction);
 
@@ -537,10 +546,10 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			//gc_firing[i] = -6.001 * exp(-gc_firing[i]/6.5) + 6;
 			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
 			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
-			gc_firing[i] = -5.001 * exp(-gc_firing[i]/3.5) + 5;
+			//gc_firing[i] = -5.001 * exp(-gc_firing[i]/3.5) + 5;
 		}
-		if (gc_firing[i] < -1) {
-		//if (gc_firing[i] < 0) {
+		//if (gc_firing[i] < -1) {
+		if (gc_firing[i] < 0) {
 			//gc_firing[i] = gc_firing[i] * .75;
 			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
 			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
@@ -548,8 +557,13 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
 			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
 			//gc_firing[i] = -5.001 * exp(gc_firing[i]/5.5) + 5;
-			gc_firing[i] = 1.001 * exp(gc_firing[i]/6.5) - 1;
+			//gc_firing[i] = 1.001 * exp(gc_firing[i]/6.5) - 1;
 		}
+		//gc_firing[i] = ((exp(gc_firing[i]) * 5)/(exp(gc_firing[i]) + 1)) - 2.5;
+		// asymmetric sigmoid function
+		//gc_firing[i] = (e/.5) * (pow(e,pow(-e,(.8-.5*gc_firing[i])))) - .6;
+		//gc_firing[i] = (e/.5) * exp(-exp(.8-.5*gc_firing[i])) - .6;
+		gc_firing[i] = (e/.45) * exp(-exp(.6-.5*gc_firing[i])) - .9;
 		//gc_firing[i] = gc_firing[i] * g->tau2;
 		//gc_firing[i] = gc_firing[i] + g->y_inter_syn;
 		if (gc_firing[i] < 0) {
