@@ -566,7 +566,7 @@ int main() {
 	for (int t = 1; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);
 
-		print_firing(gc_firing, t, &g);
+		//print_firing(gc_firing, t, &g);
 
 		write_firing(gc_firing, t, &g);		
 	}
