@@ -33,6 +33,7 @@ struct G {
 	double weights[layer_size][layer_size];
 	double a_sym = 0.5; // alpha sym
 	double a_asym = .15;//-1.5; // alpha asym
+	bool print_move = false; // print each move's direction
 };
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);

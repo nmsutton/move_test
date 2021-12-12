@@ -337,7 +337,7 @@ void set_pos(G* g, char direction) {
 		g->pos[1] = (g->layer_y - 1);
 	}
 
-	if (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r') {
+	if (g->print_move == true && (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r')) {
 		cout << " move: " << direction;
 	}
 
@@ -410,7 +410,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	set_pos(g, direction);
 
-	cout << "\n";
+	if (g->print_move) {cout << "\n";}
 
 	/*
 		apply ext input first
@@ -529,21 +529,26 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
-		if (gc_firing[i] > 6) {
+		//if (gc_firing[i] > 6) {
+		if (gc_firing[i] > 0) {
 			//gc_firing[i] = gc_firing[i] * .75;
 			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
 			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
-			gc_firing[i] = -6.001 * exp(-gc_firing[i]/6.5) + 6;
+			//gc_firing[i] = -6.001 * exp(-gc_firing[i]/6.5) + 6;
 			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
 			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
+			gc_firing[i] = -5.001 * exp(-gc_firing[i]/3.5) + 5;
 		}
 		if (gc_firing[i] < -1) {
+		//if (gc_firing[i] < 0) {
 			//gc_firing[i] = gc_firing[i] * .75;
 			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
 			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
-			gc_firing[i] = -1.001 * exp(gc_firing[i]/6.5) + 1;
+			//gc_firing[i] = -1.001 * exp(gc_firing[i]/6.5) + 1;
 			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
 			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
+			//gc_firing[i] = -5.001 * exp(gc_firing[i]/5.5) + 5;
+			gc_firing[i] = 1.001 * exp(gc_firing[i]/6.5) - 1;
 		}
 		//gc_firing[i] = gc_firing[i] * g->tau2;
 		//gc_firing[i] = gc_firing[i] + g->y_inter_syn;
