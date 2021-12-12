@@ -20,11 +20,6 @@
 #include <fstream>
 #include <string> // for filename
 
-// boost odeint
-/*#include <boost/array.hpp>
-#include <boost/numeric/odeint.hpp>
-using namespace boost::numeric::odeint;*/
-
 #define PI 3.14159265
 
 using namespace std;
@@ -349,7 +344,7 @@ void set_weights(G *g) {
 						mex_hat = get_mex_hat(d, g);
 					}
 
-					g->weights[pd_i][gc_i] = mex_hat;// * w_scale_f;
+					g->weights[pd_i][gc_i] = mex_hat;
 				}
 			}
 		}
@@ -426,7 +421,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
 		// asymmetric sigmoid function for value bounding
-		gc_firing[i] = (exp(1)/.45) * exp(-exp(.6-.5*gc_firing[i])) - .9;
+		gc_firing[i] = (exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])) + g->asig_yi;
 	}
 }
 

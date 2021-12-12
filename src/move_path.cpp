@@ -23,6 +23,12 @@ struct G {
 
 	double speed, tau, y_inter, scale, s_1, s_2, s_3, m, run_time;
 
+	// asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
+	double asig_a = 0.45;
+	double asig_b = 0.6;
+	double asig_c = 0.5;
+	double asig_yi = -0.9;
+
 	int pos[2] = {1,1};
 	char last_dir; // last direction command
 	double dist_thresh = 5.0; // distance threshold for only local connections
