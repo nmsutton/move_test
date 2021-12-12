@@ -4,7 +4,6 @@ struct G {
 	// values for synapse activites
 	double speed_syn = 0.3;//0.2924981;//1.0;//0.3; // ext input speed level
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
-	double tau2 = 1.0;//.9;	
 	double y_inter_syn = 0.1; // y intercept
 	double scale_syn = 1.0; //0.1; // multiple synaptic connections scaling factor
 	double s_1_syn = 1.5;//1.8*.404318655; // sigma_1
