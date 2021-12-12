@@ -3,15 +3,15 @@ struct G {
 
 	// values for synapse activites
 	double speed_syn = 0.3;//0.2924981;//1.0;//0.3; // ext input speed level
-	double tau = .39;//.7; // time constant; TODO: add diff equ for more realistic one
+	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
 	double tau2 = 1.0;//.9;	
-	double y_inter_syn = -0.545; // y intercept
-	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 0.151;//1.8*.404318655; // sigma_1
-	double s_2_syn = 1.9;//1.8;
-	double s_3_syn = 8.0;
-	double m_syn = 1; // magnitude variable for mex hat
-	double run_time_syn = 125; // sim run time
+	double y_inter_syn = 0.1; // y intercept
+	double scale_syn = 1.0; //0.1; // multiple synaptic connections scaling factor
+	double s_1_syn = 1.5;//1.8*.404318655; // sigma_1
+	double s_2_syn = 2.3;//1.8;
+	double s_3_syn = 2.2;
+	double m_syn = 1.0; // magnitude variable for mex hat
+	double run_time_syn = 200; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -22,11 +22,11 @@ struct G {
 	double m_init=m_syn;
 	double run_time_init = 1;
 
-	double speed, y_inter, scale, s_1, s_2, s_3, m, run_time;
+	double speed, tau, y_inter, scale, s_1, s_2, s_3, m, run_time;
 
 	int pos[2] = {1,1};
 	char last_dir; // last direction command
-	double dist_thresh = 3.0; // distance threshold for only local connections
+	double dist_thresh = 5.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;

@@ -160,9 +160,10 @@ void print_firing(double *gc_firing, int t, G* g) {
 				printf("|");
 				if (gc_firing[gc_ind] >= 0) {
 					//printf("+");
+					printf(" ");
 				}
 				//printf("%.2f %c",abs(gc_firing[gc_ind]),get_pd(i,j));
-				printf("%.2f",abs(gc_firing[gc_ind]));
+				printf("%.2f",gc_firing[gc_ind]);
 
 				if (g->pos[0] == j && g->pos[1] == i) {
 					printf("(%c)",g->last_dir);
@@ -222,7 +223,7 @@ double get_mex_hat(double d, G *g) {
 
 	//double mex_hat = (2/(sqrt(3*g->s_1_syn*pow(PI,1/4))))*(1-pow(d/g->s_2_syn,2))*(exp(pow(-1*d,2)/pow(2*g->s_3_syn,2)));
 
-	double mex_hat = y_inter + (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(d/s_2,2))*(exp(-1*(pow(d,2)/(2*pow(s_3,2)))));
+	double mex_hat = y_inter + scale * (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(m*d/s_2,2))*(exp(-1*(pow(m*d,2)/(2*pow(s_3,2)))));
 
 	// wrong formula
 	//double mex_hat = (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(d/s_2,2))*(exp(pow(-1*d,2)/pow(2*s_3,2)));
@@ -266,7 +267,8 @@ void init_firing_old(double *gc_firing, G *g) {
 		weights_bumps[g->layer_size] = 0.0;
 	}
 	int num_bumps = 4;
-	double bump_pos[num_bumps][2] = {{5,5},{5,15},{15,5},{15,15}};
+	double bump_pos[num_bumps][2] = {{1,1},{1,11},{11,1},{11,11}};
+	//double bump_pos[num_bumps][2] = {{1,1}};
 	//double bump_pos[num_bumps][2] = {{4,4},{4,14},{14,4},{14,14}};
 	g->y_inter = g->y_inter_init; // y intercept
 	g->s_1 = g->s_1_init; // sigma_1. Note: specific value used for equalibrium of weights over time.
@@ -398,6 +400,13 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		new_firing_group[i] = 0.00001;
 	}
+	g->tau = g->tau_syn;
+	g->y_inter = g->y_inter_syn;
+	g->scale = g->scale_syn;
+	g->s_1 = g->s_1_syn;
+	g->s_2 = g->s_2_syn;
+	g->s_3 = g->s_3_syn;
+	g->m = g->m_syn;
 
 	set_pos(g, direction);
 
@@ -496,10 +505,11 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 							//mex_hat = (2/(sqrt(3*g->s_1_syn*pow(PI,1/4))))*(1-pow(d/g->s_2_syn,2))*(exp(pow(-1*d,2)/pow(2*g->s_3_syn,2)));
 							mex_hat = get_mex_hat(d, g);
 
-							new_firing = g->y_inter_syn + gc_firing[pd_i] * mex_hat;
+							//new_firing = g->y_inter_syn + gc_firing[pd_i] * mex_hat;
+							new_firing = gc_firing[pd_i] * mex_hat;
 
 							if (new_firing < 0) {
-								new_firing = 0.00001; // avoid negative
+								//new_firing = 0.00001; // avoid negative
 							}	
 
 							/*if (gc_i == 21) {
@@ -524,9 +534,22 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
 			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
 			gc_firing[i] = -6.001 * exp(-gc_firing[i]/6.5) + 6;
+			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
+			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
 		}
-		gc_firing[i] = gc_firing[i] * g->tau2;
+		if (gc_firing[i] < -1) {
+			//gc_firing[i] = gc_firing[i] * .75;
+			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
+			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
+			gc_firing[i] = -1.001 * exp(gc_firing[i]/6.5) + 1;
+			//gc_firing[i] = -1906.001 * exp(-gc_firing[i]/0.7) + 4;
+			//gc_firing[i] = -50.0 * exp(-gc_firing[i]/1.2) + 4;
+		}
+		//gc_firing[i] = gc_firing[i] * g->tau2;
 		//gc_firing[i] = gc_firing[i] + g->y_inter_syn;
+		if (gc_firing[i] < 0) {
+			//gc_firing[i] = 0.00001;
+		}
 	}
 }
 
@@ -534,7 +557,7 @@ int main() {
 	struct G g;	
 	double gc_firing[g.layer_size];
 	
-	init_firing(gc_firing, &g);
+	init_firing_old(gc_firing, &g);
 
 	set_weights(&g);
 
