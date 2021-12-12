@@ -217,9 +217,14 @@ double get_mex_hat(double d, G *g) {
 	double m = g->m;
 	double scale = g->scale;
 
-	double mex_hat = scale * (y_inter + (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(m*pow(d,2)/(2*pow(s_3,2))))));
+	// correct formula version
+	//double mex_hat = scale * (y_inter + (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(m*pow(d,2)/(2*pow(s_3,2))))));
 
-	// wrong formula but using this for now
+	//double mex_hat = (2/(sqrt(3*g->s_1_syn*pow(PI,1/4))))*(1-pow(d/g->s_2_syn,2))*(exp(pow(-1*d,2)/pow(2*g->s_3_syn,2)));
+
+	double mex_hat = y_inter + (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(d/s_2,2))*(exp(-1*(pow(d,2)/(2*pow(s_3,2)))));
+
+	// wrong formula
 	//double mex_hat = (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow(d/s_2,2))*(exp(pow(-1*d,2)/pow(2*s_3,2)));
 
 	return mex_hat;
@@ -315,6 +320,19 @@ void set_pos(G* g, char direction) {
 	}
 	else if (direction == 'l') {
 		g->pos[0]--; 
+	}
+
+	if (g->pos[0] >= g->layer_x) {
+		g->pos[0] = 0;
+	}
+	else if (g->pos[0] < 0) {
+		g->pos[0] = (g->layer_x - 1);
+	}
+	if (g->pos[1] >= g->layer_y) {
+		g->pos[1] = 0;
+	}
+	else if (g->pos[1] < 0) {
+		g->pos[1] = (g->layer_y - 1);
 	}
 
 	if (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r') {
@@ -475,7 +493,8 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 						if (d < g->dist_thresh) { 
 
-							mex_hat = (2/(sqrt(3*g->s_1_syn*pow(PI,1/4))))*(1-pow(d/g->s_2_syn,2))*(exp(pow(-1*d,2)/pow(2*g->s_3_syn,2)));
+							//mex_hat = (2/(sqrt(3*g->s_1_syn*pow(PI,1/4))))*(1-pow(d/g->s_2_syn,2))*(exp(pow(-1*d,2)/pow(2*g->s_3_syn,2)));
+							mex_hat = get_mex_hat(d, g);
 
 							new_firing = g->y_inter_syn + gc_firing[pd_i] * mex_hat;
 
@@ -500,6 +519,14 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
+		if (gc_firing[i] > 6) {
+			//gc_firing[i] = gc_firing[i] * .75;
+			//gc_firing[i] = 2.5 + pow((gc_firing[i]/5),2.5);
+			//gc_firing[i] = 2.5 + gc_firing[i] * .45;
+			gc_firing[i] = -6.001 * exp(-gc_firing[i]/6.5) + 6;
+		}
+		gc_firing[i] = gc_firing[i] * g->tau2;
+		//gc_firing[i] = gc_firing[i] + g->y_inter_syn;
 	}
 }
 

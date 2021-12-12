@@ -2,15 +2,16 @@ struct G {
 	// general parameters
 
 	// values for synapse activites
-	double speed_syn = 0.4;//0.2924981;//1.0;//0.3; // ext input speed level
-	double tau = .44695;//.7; // time constant; TODO: add diff equ for more realistic one	
-	double y_inter_syn = -0.5; // y intercept
+	double speed_syn = 0.3;//0.2924981;//1.0;//0.3; // ext input speed level
+	double tau = .39;//.7; // time constant; TODO: add diff equ for more realistic one
+	double tau2 = 1.0;//.9;	
+	double y_inter_syn = -0.545; // y intercept
 	double scale_syn = 0.25; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 0.9;//1.8*.404318655; // sigma_1
-	double s_2_syn = 2.5;//1.8;
-	double s_3_syn = 1.8;
+	double s_1_syn = 0.151;//1.8*.404318655; // sigma_1
+	double s_2_syn = 1.9;//1.8;
+	double s_3_syn = 8.0;
 	double m_syn = 1; // magnitude variable for mex hat
-	double run_time_syn = 45; // sim run time
+	double run_time_syn = 125; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -346,6 +347,309 @@ void move_path(double *gc_firing, int t, G* g) {
 	else if (t == 100) {
 		ext_input('l', speed, gc_firing, g);
 	}	
+	else if (t == 101) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 102) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 103) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 104) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 105) {
+		ext_input('r', speed, gc_firing, g);
+	}	
+	else if (t == 106) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 107) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 108) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 109) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 110) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 111) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 112) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 113) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 114) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 115) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 116) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 117) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 118) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 119) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 120) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 121) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 122) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 123) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 124) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 125) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 126) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 127) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 128) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 129) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 130) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 131) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 132) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 133) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 134) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 135) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 136) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 137) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 138) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 139) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 140) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 141) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 142) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 143) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 144) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 145) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 146) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 147) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 148) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 149) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 150) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 151) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 152) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 153) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 154) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 155) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 156) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 157) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 158) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 159) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 160) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 161) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 162) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 163) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 164) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 165) {
+		ext_input('r', speed, gc_firing, g);
+	}	
+	else if (t == 166) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 167) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 168) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 169) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 170) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 171) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 172) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 173) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 174) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 175) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 176) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 177) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 178) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 179) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 180) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 181) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 182) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 183) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 184) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 185) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 186) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 187) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 188) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 189) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 190) {
+		ext_input('r', speed, gc_firing, g);
+	}	
+	else if (t == 191) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 192) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 193) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 193) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 194) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 195) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 196) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 197) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 198) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 199) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 200) {
+		ext_input('l', speed, gc_firing, g);
+	}
 	else {
 		ext_input('n', speed, gc_firing, g);
 	}
