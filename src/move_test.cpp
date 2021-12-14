@@ -228,7 +228,7 @@ void init_firing(double *gc_firing, G *g) {
 
 	int i;
 	double mex_hat, d;
-	double init_f = 1.0; // initial firing amount
+	double init_f = 4.0; // initial firing amount
 	double w1 = 2.000001;
 	double w2 = 1.748563;
  	double w3 = 1.473271;
@@ -430,7 +430,13 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
 		// asymmetric sigmoid function for value bounding
-		gc_firing[i] = (exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])) + g->asig_yi;
+		//gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
+		if (gc_firing[i] < 1.2) {
+			gc_firing[i] = 0;
+		}
+		else {
+			gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
+		}
 		if (g->noise_active == true) {
 			// add random noise for realism
 			gc_firing[i] = gc_firing[i] + get_noise(g);
