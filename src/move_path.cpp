@@ -41,7 +41,7 @@ struct G {
 	double a_asym = .15;//-1.5; // alpha asym
 	bool print_move = true; // print each move's direction
 
-	bool noise_active = false; // activate noise
+	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.003; // scale to desired size for firing
 };
