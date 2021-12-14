@@ -167,11 +167,9 @@ void print_firing(double *gc_firing, int t, G* g) {
 				//printf("%.2f %c",abs(gc_firing[gc_ind]),get_pd(i,j));
 				printf("%.2f",gc_firing[gc_ind]);
 
-				if (g->pos[0] == j && g->pos[1] == i) {
+				if (g->pos[0] == j && g->pos[1] == i && g->print_move) {
 					printf("(%c)",g->last_dir);
 				}
-
-				//printf(" ");
 			}
 			cout << "\n";
 		}
@@ -351,6 +349,17 @@ void set_weights(G *g) {
 	}
 }
 
+double get_noise(G *g) {
+	int rand_max = g->noise_rand_max;
+	double scale = g->noise_scale;
+
+	double rand_val = rand() % rand_max; // rand number up to rand_max
+	rand_val = rand_val * scale; // scale to desired size
+	rand_val = rand_val - (scale/2); // include negative values
+
+	return rand_val;
+}
+
 void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	/*
 		Apply external input
@@ -396,7 +405,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
 		for (int pdx = 0; pdx < g->layer_x; pdx++) {
-			if (direction == get_pd(pdx, pdy)) {
+			if (direction == get_pd(pdx, pdy) || direction == 'n') {
 				for (int gcy = 0; gcy < g->layer_y; gcy++) {
 					for (int gcx = 0; gcx < g->layer_x; gcx++) {			
 						pd_i = (pdy * g->layer_x) + pdx;						
@@ -422,6 +431,10 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
 		// asymmetric sigmoid function for value bounding
 		gc_firing[i] = (exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])) + g->asig_yi;
+		if (g->noise_active == true) {
+			// add random noise for realism
+			gc_firing[i] = gc_firing[i] + get_noise(g);
+		}
 	}
 }
 
@@ -438,9 +451,9 @@ int main() {
 	for (int t = 1; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);
 
-		//print_firing(gc_firing, t, &g);
+		print_firing(gc_firing, t, &g);
 
-		write_firing(gc_firing, t, &g);		
+		//write_firing(gc_firing, t, &g);		
 	}
 
 	return 0;

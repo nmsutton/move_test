@@ -10,7 +10,7 @@ struct G {
 	double s_2_syn = 2.3;//1.8;
 	double s_3_syn = 2.2;
 	double m_syn = 1.0; // magnitude variable for mex hat
-	double run_time_syn = 400; // sim run time
+	double run_time_syn = 5; // sim run time
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -29,7 +29,7 @@ struct G {
 	double asig_c = 0.5;
 	double asig_yi = -0.9;
 
-	int pos[2] = {1,1};
+	int pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
 	double dist_thresh = 5.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
@@ -39,7 +39,35 @@ struct G {
 	double a_sym = 0.5; // alpha sym
 	double a_asym = .15;//-1.5; // alpha asym
 	bool print_move = false; // print each move's direction
+
+	bool noise_active = false; // activate noise
+	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
+	double noise_scale = 0.003; // scale to desired size for firing
 };
+
+char rand_move() {
+	int num_directions = 5;
+	int rand_val = rand() % num_directions + 1;
+	char direction;
+
+	if (rand_val == 1) {
+		direction = 'u';
+	}
+	else if (rand_val == 2) {
+		direction = 'r';
+	}
+	else if (rand_val == 3) {
+		direction = 'd';
+	}
+	else if (rand_val == 4) {
+		direction = 'l';
+	}
+	else if (rand_val == 5) {
+		direction = 'n';
+	}
+
+	return direction;
+}
 
 void ext_input(char direction, double speed, double *gc_firing, G* g);
 
@@ -141,7 +169,7 @@ void move_path(double *gc_firing, int t, G* g) {
 		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 31) {
-		ext_input('d', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 32) {
 		ext_input('r', speed, gc_firing, g);
@@ -150,28 +178,28 @@ void move_path(double *gc_firing, int t, G* g) {
 		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 34) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 35) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 36) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
 	else if (t == 37) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('l', speed, gc_firing, g);
 	}
 	else if (t == 38) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('d', speed, gc_firing, g);
 	}
 	else if (t == 39) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 40) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 41) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('d', speed, gc_firing, g);
 	}
 	else if (t == 42) {
 		ext_input('d', speed, gc_firing, g);
@@ -978,37 +1006,37 @@ void move_path(double *gc_firing, int t, G* g) {
 		ext_input('r', speed, gc_firing, g);
 	}
 	else if (t == 310) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 311) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 312) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 313) {
 		ext_input('u', speed, gc_firing, g);
 	}
 	else if (t == 314) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 315) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 316) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 317) {
-		ext_input('l', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 318) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 319) {
-		ext_input('u', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 320) {
-		ext_input('r', speed, gc_firing, g);
+		ext_input('n', speed, gc_firing, g);
 	}
 	else if (t == 321) {
 		ext_input('d', speed, gc_firing, g);
@@ -1250,8 +1278,38 @@ void move_path(double *gc_firing, int t, G* g) {
 	else if (t == 400) {
 		ext_input('l', speed, gc_firing, g);
 	}
+	else if (t == 491) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 492) {
+		ext_input('r', speed, gc_firing, g);
+	}
+	else if (t == 493) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 494) {
+		ext_input('d', speed, gc_firing, g);
+	}
+	else if (t == 495) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 496) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 497) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 498) {
+		ext_input('u', speed, gc_firing, g);
+	}
+	else if (t == 499) {
+		ext_input('l', speed, gc_firing, g);
+	}
+	else if (t == 500) {
+		ext_input('l', speed, gc_firing, g);
+	}
 	else {
-		ext_input('n', speed, gc_firing, g);
+		ext_input(rand_move(), speed, gc_firing, g);
 	}
 }
 
