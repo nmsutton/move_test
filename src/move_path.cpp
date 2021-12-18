@@ -24,10 +24,10 @@ struct G {
 	double speed, tau, y_inter, scale, s_1, s_2, s_3, m, run_time;
 
 	// asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
-	double asig_a = 0.45;//2.0;//0.45;
-	double asig_b = 0.6;//2.15;//0.6;
-	double asig_c = 0.457921;//1.0;//0.5;
-	double asig_yi = -0.9;//0.0;//-0.9;
+	double asig_a = -8.025;//0.6;//0.45;//2.0;//0.45;
+	double asig_b = 2.15;//9.89493996719;//0.6;//2.15;//0.6;
+	double asig_c = 4.9898;//3.0;//0.457921;//1.0;//0.5;
+	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	int pos[2] = {1,1}; // starting position
@@ -39,11 +39,11 @@ struct G {
 	double weights[layer_size][layer_size];
 	double a_sym = 0.5; // alpha sym
 	double a_asym = .15;//-1.5; // alpha asym
-	bool print_move = true; // print each move's direction
+	bool print_move = false; // print each move's direction
 
-	bool noise_active = true; // activate noise
+	bool noise_active = false; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.003; // scale to desired size for firing
+	double noise_scale = 0.01; // scale to desired size for firing
 };
 
 char rand_move() {

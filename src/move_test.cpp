@@ -355,7 +355,7 @@ double get_noise(G *g) {
 
 	double rand_val = rand() % rand_max; // rand number up to rand_max
 	rand_val = rand_val * scale; // scale to desired size
-	rand_val = rand_val - (scale/2); // include negative values
+	//rand_val = rand_val - (scale/2); // include negative values, comment out to only have positive values
 
 	return rand_val;
 }
@@ -430,12 +430,17 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		gc_firing[i] = new_firing_group[i] * g->tau;
 		// asymmetric sigmoid function for value bounding
-		//gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
-		if (gc_firing[i] < 1.2) {
+		// gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
+		/*if (gc_firing[i] < 1.2) {
 			gc_firing[i] = 0;
 		}
 		else {
 			gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
+		}*/
+		// original tau derivative
+		gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
+		if (gc_firing[i] < 0) {
+			gc_firing[i] = 0;
 		}
 		if (g->noise_active == true) {
 			// add random noise for realism
@@ -457,9 +462,9 @@ int main() {
 	for (int t = 1; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);
 
-		print_firing(gc_firing, t, &g);
+		//print_firing(gc_firing, t, &g);
 
-		//write_firing(gc_firing, t, &g);		
+		write_firing(gc_firing, t, &g);		
 	}
 
 	return 0;
