@@ -7,7 +7,7 @@ struct G {
 	double y_inter_syn = 0.1;//0.32; // y intercept
 	double scale_syn = 3.0; //0.1; // multiple synaptic connections scaling factor
 	double s_1_syn =1.5;//1.5;//1.8*.404318655; // sigma_1
-	double s_2_syn = 2.528999925;//1.8;
+	double s_2_syn = 2.529;//2.528999925;//1.8;
 	double s_3_syn = 2.2;
 	double m_syn = 1.0; // magnitude variable for mex hat
 	double run_time_syn = 1000; // sim run time
@@ -26,7 +26,7 @@ struct G {
 	// asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -8.025;//0.6;//0.45;//2.0;//0.45;
 	double asig_b = 2.15;//9.89493996719;//0.6;//2.15;//0.6;
-	double asig_c = 4.9898;//3.0;//0.457921;//1.0;//0.5;
+	double asig_c = 4.99;//4.9898;//3.0;//0.457921;//1.0;//0.5;
 	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
 	double asig_scale = 1.0;//2.0;//-0.9;
 
@@ -41,7 +41,7 @@ struct G {
 	double a_asym = .15;//-1.5; // alpha asym
 	bool print_move = false; // print each move's direction
 
-	bool noise_active = false; // activate noise
+	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 };

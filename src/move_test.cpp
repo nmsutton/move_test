@@ -267,6 +267,10 @@ void init_firing(double *gc_firing, G *g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
+		if (weights_bumps[i] < 0) {
+			weights_bumps[i] = 0; // no neg values rectifier
+		}
+
 		gc_firing[i] = init_f * weights_bumps[i];
 	}
 }
