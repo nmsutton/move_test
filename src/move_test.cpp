@@ -210,6 +210,30 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	return d;
 }
 
+double hside(double d) {
+	/* heaviside function */
+
+	double result = 0;
+
+	if (d >= 0) {
+		result = 1;
+	}
+
+	return result;
+}
+
+double get_top_hat(double d, G *g) {
+	/* 
+		return value processed by the top hat function
+		reference: https://www.intmath.com/laplace-transformation/1a-unit-step-functions-definition.php
+	*/
+	double r = g->rad_ext;
+
+	double t_hat = r - (d * (hside(d - g->hside_start) - hside(d - g->hside_end)));
+
+	return t_hat *.1;
+}
+
 double get_mex_hat(double d, G *g) {
 	double y_inter = g->y_inter;
 	double s_1 = g->s_1;
@@ -369,7 +393,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		Apply external input
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double new_firing, new_weight, weight_sum, pd_fac, hat;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
 	double new_firing_group[g->layer_size];
@@ -388,31 +412,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	if (g->print_move) {cout << "\n";}
 
-	/* apply synaptic weights */
-	for (int pdy = 0; pdy < g->layer_y; pdy++) {
-		for (int pdx = 0; pdx < g->layer_x; pdx++) {
-			if (direction == get_pd(pdx, pdy) || direction == 'n') {
-				for (int gcy = 0; gcy < g->layer_y; gcy++) {
-					for (int gcx = 0; gcx < g->layer_x; gcx++) {			
-						pd_i = (pdy * g->layer_x) + pdx;						
-						gc_i = (gcy * g->layer_x) + gcx;
-
-						d = get_distance(pdx, pdy, gcx, gcy, direction, g);
-
-						if (d < g->dist_thresh) { 
-							mex_hat = get_mex_hat(d, g);
-
-							new_firing = gc_firing[pd_i] * mex_hat;
-
-							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/* apply ext input first */
+	/*
+		apply ext input first
+	*/
 	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		if (get_pd(gc_i, g) == direction) {
 			pd_fac = 1.0;//2;
@@ -426,14 +428,38 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			pd_fac = 0.0;//1.0;
 		}
 
-		//gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
-		new_firing_group[gc_i] = new_firing_group[gc_i] + (pd_fac * g->speed_syn) + g->base_firing;
-	}	
+		gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
+	}
+
+	for (int pdy = 0; pdy < g->layer_y; pdy++) {
+		for (int pdx = 0; pdx < g->layer_x; pdx++) {
+			if (direction == get_pd(pdx, pdy) || direction == 'n') {
+				for (int gcy = 0; gcy < g->layer_y; gcy++) {
+					for (int gcx = 0; gcx < g->layer_x; gcx++) {			
+						pd_i = (pdy * g->layer_x) + pdx;						
+						gc_i = (gcy * g->layer_x) + gcx;
+
+						d = get_distance(pdx, pdy, gcx, gcy, direction, g);
+
+						if (d < g->dist_thresh) { 
+
+							//hat = get_mex_hat(d, g);
+							hat = get_top_hat(d, g);
+
+							new_firing = gc_firing[pd_i] * hat;
+							//new_firing = hat;
+
+							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		// simple firing reduction
-		gc_firing[i] = new_firing_group[i] * g->tau;
-		//gc_firing[i] = new_firing_group[i];
+		//gc_firing[i] = new_firing_group[i] * g->tau;
+		gc_firing[i] = new_firing_group[i];
 
 		// asymmetric sigmoid function for value bounding
 		// gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
@@ -443,12 +469,10 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		else {
 			gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
 		}*/
-		
 		// original tau derivative
 		//gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
-		// non-negative firing rectifier
 		if (gc_firing[i] < 0) {
-			//gc_firing[i] = 0;
+			gc_firing[i] = 0;
 		}
 		if (g->noise_active == true) {
 			// add random noise for realism

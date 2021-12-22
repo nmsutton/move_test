@@ -1,21 +1,20 @@
 struct G {
 	// general parameters
-	double base_firing = 2.0; // baseline firing
 
 	// values for synapse activites
-	double speed_syn = 1.5;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
+	double speed_syn = 2;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
-	double y_inter_syn = -0.05;//0.32; // y intercept
-	double scale_syn = 0.125; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 7;//1.5;//1.8*.404318655; // sigma_1
-	double s_2_syn = 1;//2.528999925;//1.8;
-	double s_3_syn = 1;
-	double m_syn = 0.5; // magnitude variable for mex hat
-	double run_time_syn = 4; // sim run time
+	double y_inter_syn = 0.1;//0.32; // y intercept
+	double scale_syn = 1.6; //0.1; // multiple synaptic connections scaling factor
+	double s_1_syn = 1.5;//1.5;//1.8*.404318655; // sigma_1
+	double s_2_syn = 2.5;//2.528999925;//1.8;
+	double s_3_syn = 2.2;
+	double m_syn = 1.0; // magnitude variable for mex hat
+	double run_time_syn = 2; // sim run time
 
 	// initial values
-	double y_inter_init = .2;//y_inter_syn; // y intercept
-	double scale_init= 1;//scale_syn;	
+	double y_inter_init = -1;//y_inter_syn; // y intercept
+	double scale_init=scale_syn;	
 	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	double s_2_init = s_2_syn;
 	double s_3_init = s_3_syn;
@@ -31,9 +30,14 @@ struct G {
 	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
 	double asig_scale = 1.0;//2.0;//-0.9;
 
+	// top hat parameters
+	double hside_start = 0.0;
+	double hside_end = 1.5;
+	double rad_ext = 2.0; // radial extent of connectivity
+
 	int pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
-	double dist_thresh = 5.0; // distance threshold for only local connections
+	double dist_thresh = 5.0;//5.0; // distance threshold for only local connections
 	static const int layer_x = 20;//26;
 	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;
