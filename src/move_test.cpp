@@ -13,7 +13,9 @@
 #include <cstring>
 #include <sstream>
 #include <iostream>
+#include "general_funct.cpp"
 #include "move_path.cpp"
+#include "place_cells.cpp"
 
 // for file out
 #include <iostream>
@@ -176,64 +178,6 @@ void print_firing(double *gc_firing, int t, G* g) {
 	}
 }
 
-double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
-	// d = sqrt((e_x - i_x - o_x)^2+(e_y - i_y - o_y)^2)
-	int x2_x1 = (x2 - x1);
-	int y2_y1 = (y2 - y1);
-	int half_point = g->layer_x / 2; // layer length divided by 2
-
-	// preferred direction bias
-	if (pd == 'u') {
-		y2_y1 = y2_y1 - 1;
-	}
-	if (pd == 'd') {
-		y2_y1 = y2_y1 + 1;
-	}
-	if (pd == 'r') {
-		x2_x1 = x2_x1 - 1;
-	}
-	if (pd == 'l') {
-		x2_x1 = x2_x1 + 1;
-	}	
-
-	// torus wrap around
-	if (abs(x2_x1) >= half_point) {
-		// distance wraps half way around
-		x2_x1 = (g->layer_x - abs(x2_x1));
-	}
-	if (abs(y2_y1) >= half_point) {
-		y2_y1 = (g->layer_y - abs(y2_y1));
-	}
-
-	double d = sqrt(pow(x2_x1,2)+pow(y2_y1,2));
-
-	return d;
-}
-
-double hside(double d) {
-	/* heaviside function */
-
-	double result = 0;
-
-	if (d >= 0) {
-		result = 1;
-	}
-
-	return result;
-}
-
-double get_top_hat(double d, G *g) {
-	/* 
-		return value processed by the top hat function
-		reference: https://www.intmath.com/laplace-transformation/1a-unit-step-functions-definition.php
-	*/
-	double r = g->rad_ext;
-
-	double t_hat = r - (d * (hside(d - g->hside_start) - hside(d - g->hside_end)));
-
-	return t_hat *.1;
-}
-
 double get_mex_hat(double d, G *g) {
 	double y_inter = g->y_inter;
 	double s_1 = g->s_1;
@@ -251,6 +195,9 @@ void init_firing(double *gc_firing, G *g) {
 	// initialize firing
 
 	int i;
+	int init_x = g->bump_init_x;
+	int init_y = g->bump_init_y;
+	int bump_d = g->bump_dist;
 	double mex_hat, d;
 	double init_f = 4.0; // initial firing amount
 	double w1 = 2.000001;
@@ -261,8 +208,7 @@ void init_firing(double *gc_firing, G *g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		weights_bumps[g->layer_size] = 0.0;
 	}
-	int num_bumps = 4;
-	double bump_pos[num_bumps][2] = {{1,1},{1,11},{11,1},{11,11}};
+	int bump_pos[g->num_bumps][2] = {{init_x,init_y},{init_x,(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+bump_d),(init_y+bump_d)}};
 	//double bump_pos[num_bumps][2] = {{1,1}};
 	//double bump_pos[num_bumps][2] = {{4,4},{4,14},{14,4},{14,14}};
 	g->y_inter = g->y_inter_init; // y intercept
@@ -276,7 +222,7 @@ void init_firing(double *gc_firing, G *g) {
 	// find weights for the starting bumps
 	for (int y = 0; y < g->layer_y; y++) {
 		for (int x = 0; x < g->layer_x; x++) {
-			for (int b = 0; b < num_bumps; b++) {
+			for (int b = 0; b < g->num_bumps; b++) {
 				i = (y * g->layer_x) + x;
 
 				d = get_distance(x, y, bump_pos[b][0], bump_pos[b][1], 'n', g);
@@ -393,7 +339,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		Apply external input
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, hat;
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
 	double new_firing_group[g->layer_size];
@@ -412,9 +358,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 	if (g->print_move) {cout << "\n";}
 
-	/*
-		apply ext input first
-	*/
+	/* apply ext input first */
 	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		if (get_pd(gc_i, g) == direction) {
 			pd_fac = 1.0;//2;
@@ -431,6 +375,10 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
 	}
 
+	/* place cell firing */
+	place_cell_firing(gc_firing, g);
+
+	/* grid cell and interneuron synapse connections */
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
 		for (int pdx = 0; pdx < g->layer_x; pdx++) {
 			if (direction == get_pd(pdx, pdy) || direction == 'n') {
@@ -443,11 +391,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 						if (d < g->dist_thresh) { 
 
-							//hat = get_mex_hat(d, g);
-							hat = get_top_hat(d, g);
+							mex_hat = get_mex_hat(d, g);
 
-							new_firing = gc_firing[pd_i] * hat;
-							//new_firing = hat;
+							new_firing = gc_firing[pd_i] * 0.05;//mex_hat;
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
@@ -458,9 +404,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		//gc_firing[i] = new_firing_group[i] * g->tau;
-		gc_firing[i] = new_firing_group[i];
-
+		gc_firing[i] = new_firing_group[i] * g->tau;
 		// asymmetric sigmoid function for value bounding
 		// gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
 		/*if (gc_firing[i] < 1.2) {
@@ -470,7 +414,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
 		}*/
 		// original tau derivative
-		//gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
+		gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
 		if (gc_firing[i] < 0) {
 			gc_firing[i] = 0;
 		}
@@ -494,9 +438,9 @@ int main() {
 	for (int t = 1; t <= g.run_time; t++) {
 		move_path(gc_firing, t, &g);
 
-		print_firing(gc_firing, t, &g);
+		//print_firing(gc_firing, t, &g);
 
-		//write_firing(gc_firing, t, &g);		
+		write_firing(gc_firing, t, &g);		
 	}
 
 	return 0;
