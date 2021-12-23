@@ -12,7 +12,7 @@ struct G {
 	int num_bumps = bumps_x * bumps_y; // number of initial bumps
 
 	// values for synapse activites
-	double speed_syn = 2;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
+	double speed_syn = 1.5;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
 	double y_inter_syn = 0.1;//0.32; // y intercept
 	double scale_syn = 3.0; //0.1; // multiple synaptic connections scaling factor
@@ -41,8 +41,8 @@ struct G {
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
-	double pc_sig = 2.0; // sigma symbol; width of the place feild
-	double pc_level = 3.0; // place cell firing level
+	double pc_sig = 1.0; // sigma symbol; width of the place feild
+	double pc_level = 8.0; // place cell firing level
 
 	int pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
@@ -53,7 +53,7 @@ struct G {
 	double weights[layer_size][layer_size];
 	double a_sym = 0.5; // alpha sym
 	double a_asym = .15;//-1.5; // alpha asym
-	bool print_move = true; // print each move's direction
+	bool print_move = false; // print each move's direction
 
 	bool noise_active = false; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
