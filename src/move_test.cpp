@@ -393,7 +393,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 
 							mex_hat = get_mex_hat(d, g);
 
-							new_firing = gc_firing[pd_i] * 0.05;//mex_hat;
+							new_firing = gc_firing[pd_i] * mex_hat; // 0.05
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
