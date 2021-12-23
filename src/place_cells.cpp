@@ -7,7 +7,7 @@ double pc_rate(int p_x, int p_y, int b_x, int b_y, G *g) {
 
 	double rate = g->pc_level * exp(-((pow(d,2))/(2*pow(g->pc_sig,2))));
 
-	if(p_y==11&&p_x==1) {printf("%d %d %d %d %f %f\n",p_x,p_y,b_x,b_y,d,rate);}	
+	//if(p_y==11&&p_x==1) {printf("%d %d %d %d %f %f\n",p_x,p_y,b_x,b_y,d,rate);}	
 
 	return rate;
 }

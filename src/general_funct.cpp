@@ -16,7 +16,7 @@ struct G {
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
 	double y_inter_syn = 0.1;//0.32; // y intercept
 	double scale_syn = 3.0; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn =1.5;//1.5;//1.8*.404318655; // sigma_1
+	double s_1_syn = 1.5;//1.5;//1.8*.404318655; // sigma_1
 	double s_2_syn = 2.5;//2.528999925;//1.8;
 	double s_3_syn = 2.2;
 	double m_syn = 1.0; // magnitude variable for mex hat
@@ -53,7 +53,7 @@ struct G {
 	double weights[layer_size][layer_size];
 	double a_sym = 0.5; // alpha sym
 	double a_asym = .15;//-1.5; // alpha asym
-	bool print_move = true; // print each move's direction
+	bool print_move = false; // print each move's direction
 
 	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
