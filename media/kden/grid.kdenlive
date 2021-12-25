@@ -1,22 +1,29 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mlt LC_NUMERIC="C" producer="main_bin" version="6.26.1" root="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/kden">
- <profile frame_rate_num="30" sample_aspect_num="1" display_aspect_den="413" colorspace="601" progressive="1" description="570x414 30.00fps" display_aspect_num="570" frame_rate_den="1" width="570" height="414" sample_aspect_den="1"/>
- <producer id="producer0" in="00:00:00.000" out="00:00:03.267">
-  <property name="length">99</property>
+ <profile frame_rate_num="30000" sample_aspect_num="1" display_aspect_den="414" colorspace="709" progressive="1" description="570x414 29.97fps" display_aspect_num="570" frame_rate_den="1001" width="570" height="414" sample_aspect_den="1"/>
+ <producer id="producer0" in="00:00:00.000" out="00:00:33.267">
+  <property name="length">998</property>
   <property name="eof">pause</property>
-  <property name="resource">/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/src/firing.avi</property>
-  <property name="audio_index">-1</property>
-  <property name="video_index">0</property>
-  <property name="mute_on_pause">0</property>
-  <property name="mlt_service">avformat-novalidate</property>
-  <property name="seekable">1</property>
+  <property name="resource">/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid2.png</property>
+  <property name="ttl">25</property>
   <property name="aspect_ratio">1</property>
+  <property name="progressive">1</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.width">570</property>
+  <property name="meta.media.height">413</property>
+  <property name="mlt_service">qimage</property>
   <property name="kdenlive:clipname"/>
+  <property name="kdenlive:duration">00:00:05.005</property>
   <property name="kdenlive:folderid">-1</property>
   <property name="kdenlive:id">2</property>
-  <property name="kdenlive:file_size">2078576</property>
-  <property name="kdenlive:file_hash">6fb47faa09479cf571380db9c02ec4be</property>
+  <property name="kdenlive:file_size">28829</property>
+  <property name="kdenlive:file_hash">b27879c8ca0e0dbc0a32bcabe58e7a01</property>
   <property name="global_feed">1</property>
+ </producer>
+ <producer id="producer1" in="00:00:00.000" out="00:00:33.267">
+  <property name="length">998</property>
+  <property name="eof">pause</property>
+  <property name="resource">/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/src/firing.avi</property>
   <property name="meta.media.nb_streams">1</property>
   <property name="meta.media.0.stream.type">video</property>
   <property name="meta.media.0.stream.frame_rate">30</property>
@@ -30,9 +37,17 @@
   <property name="meta.media.0.codec.colorspace">601</property>
   <property name="meta.media.0.codec.name">mjpeg</property>
   <property name="meta.media.0.codec.long_name">MJPEG (Motion JPEG)</property>
-  <property name="meta.media.0.codec.bit_rate">4921332</property>
+  <property name="meta.media.0.codec.bit_rate">7457154</property>
+  <property name="seekable">1</property>
   <property name="meta.media.sample_aspect_num">1</property>
   <property name="meta.media.sample_aspect_den">1</property>
+  <property name="aspect_ratio">1</property>
+  <property name="audio_index">-1</property>
+  <property name="video_index">0</property>
+  <property name="mute_on_pause">0</property>
+  <property name="mlt_service">avformat-novalidate</property>
+  <property name="kdenlive:clipname"/>
+  <property name="kdenlive:folderid">-1</property>
   <property name="meta.media.frame_rate_num">30</property>
   <property name="meta.media.frame_rate_den">1</property>
   <property name="meta.media.colorspace">601</property>
@@ -40,34 +55,19 @@
   <property name="meta.media.width">570</property>
   <property name="meta.media.height">413</property>
   <property name="meta.media.color_range">full</property>
+  <property name="kdenlive:id">3</property>
+  <property name="kdenlive:file_size">31107164</property>
+  <property name="kdenlive:file_hash">8fd832a2f81f835eb5c2522a310da698</property>
   <property name="meta.media.top_field_first">0</property>
   <property name="meta.media.progressive">1</property>
- </producer>
- <producer id="producer1" in="00:00:00.000" out="00:00:04.967">
-  <property name="length">00:00:05.000</property>
-  <property name="eof">pause</property>
-  <property name="resource">/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid2.png</property>
-  <property name="ttl">25</property>
-  <property name="aspect_ratio">1</property>
-  <property name="progressive">1</property>
-  <property name="seekable">1</property>
-  <property name="meta.media.width">570</property>
-  <property name="meta.media.height">413</property>
-  <property name="mlt_service">qimage</property>
-  <property name="kdenlive:clipname"/>
-  <property name="kdenlive:duration">00:00:05.000</property>
-  <property name="kdenlive:folderid">-1</property>
-  <property name="kdenlive:id">3</property>
-  <property name="kdenlive:file_size">28829</property>
-  <property name="kdenlive:file_hash">b27879c8ca0e0dbc0a32bcabe58e7a01</property>
   <property name="global_feed">1</property>
  </producer>
  <playlist id="main_bin">
-  <property name="kdenlive:docproperties.activeTrack">3</property>
+  <property name="kdenlive:docproperties.activeTrack">2</property>
   <property name="kdenlive:docproperties.audioChannels">2</property>
   <property name="kdenlive:docproperties.audioTarget">-1</property>
   <property name="kdenlive:docproperties.disablepreview">0</property>
-  <property name="kdenlive:docproperties.documentid">1639022396130</property>
+  <property name="kdenlive:docproperties.documentid">1640319737064</property>
   <property name="kdenlive:docproperties.enableTimelineZone">0</property>
   <property name="kdenlive:docproperties.enableexternalproxy">0</property>
   <property name="kdenlive:docproperties.enableproxy">0</property>
@@ -75,10 +75,10 @@
   <property name="kdenlive:docproperties.generateimageproxy">0</property>
   <property name="kdenlive:docproperties.generateproxy">0</property>
   <property name="kdenlive:docproperties.kdenliveversion">21.04.3</property>
-  <property name="kdenlive:docproperties.position">86</property>
+  <property name="kdenlive:docproperties.position">0</property>
   <property name="kdenlive:docproperties.previewextension"/>
   <property name="kdenlive:docproperties.previewparameters"/>
-  <property name="kdenlive:docproperties.profile">/home/nmsutton/.local/share/kdenlive/profiles/customprofile1</property>
+  <property name="kdenlive:docproperties.profile">/home/nmsutton/.local/share/kdenlive/profiles/customprofile2</property>
   <property name="kdenlive:docproperties.proxyextension"/>
   <property name="kdenlive:docproperties.proxyimageminsize">2000</property>
   <property name="kdenlive:docproperties.proxyimagesize">800</property>
@@ -90,7 +90,7 @@
   <property name="kdenlive:docproperties.verticalzoom">1</property>
   <property name="kdenlive:docproperties.videoTarget">2</property>
   <property name="kdenlive:docproperties.zonein">0</property>
-  <property name="kdenlive:docproperties.zoneout">99</property>
+  <property name="kdenlive:docproperties.zoneout">75</property>
   <property name="kdenlive:docproperties.zoom">8</property>
   <property name="kdenlive:expandedFolders"/>
   <property name="kdenlive:documentnotes"/>
@@ -119,10 +119,10 @@
   <property name="kdenlive:docproperties.renderurl">grid.mp4</property>
   <property name="kdenlive:docproperties.renderzone">0</property>
   <property name="xml_retain">1</property>
-  <entry producer="producer0" in="00:00:00.000" out="00:00:03.267"/>
-  <entry producer="producer1" in="00:00:00.000" out="00:00:04.967"/>
+  <entry producer="producer0" in="00:00:00.000" out="00:00:04.972"/>
+  <entry producer="producer1" in="00:00:00.000" out="00:00:33.267"/>
  </playlist>
- <producer id="black_track" in="00:00:00.000" out="00:16:43.300">
+ <producer id="black_track" in="00:00:00.000" out="00:17:14.314">
   <property name="length">2147483647</property>
   <property name="eof">continue</property>
   <property name="resource">black</property>
@@ -197,8 +197,8 @@
    <property name="disable">1</property>
   </filter>
  </tractor>
- <producer id="producer2" in="00:00:00.000" out="00:00:03.267">
-  <property name="length">99</property>
+ <producer id="producer2" in="00:00:00.000" out="00:00:33.267">
+  <property name="length">998</property>
   <property name="eof">pause</property>
   <property name="resource">/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/src/firing.avi</property>
   <property name="audio_index">-1</property>
@@ -209,9 +209,9 @@
   <property name="aspect_ratio">1</property>
   <property name="kdenlive:clipname"/>
   <property name="kdenlive:folderid">-1</property>
-  <property name="kdenlive:id">2</property>
-  <property name="kdenlive:file_size">2078576</property>
-  <property name="kdenlive:file_hash">6fb47faa09479cf571380db9c02ec4be</property>
+  <property name="kdenlive:id">3</property>
+  <property name="kdenlive:file_size">31107164</property>
+  <property name="kdenlive:file_hash">8fd832a2f81f835eb5c2522a310da698</property>
   <property name="global_feed">1</property>
   <property name="xml">was here</property>
   <property name="meta.media.nb_streams">1</property>
@@ -227,7 +227,7 @@
   <property name="meta.media.0.codec.colorspace">601</property>
   <property name="meta.media.0.codec.name">mjpeg</property>
   <property name="meta.media.0.codec.long_name">MJPEG (Motion JPEG)</property>
-  <property name="meta.media.0.codec.bit_rate">4921332</property>
+  <property name="meta.media.0.codec.bit_rate">7457154</property>
   <property name="meta.media.sample_aspect_num">1</property>
   <property name="meta.media.sample_aspect_den">1</property>
   <property name="meta.media.frame_rate_num">30</property>
@@ -237,18 +237,18 @@
   <property name="meta.media.width">570</property>
   <property name="meta.media.height">413</property>
   <property name="meta.media.color_range">full</property>
-  <property name="set.test_audio">1</property>
-  <property name="set.test_image">0</property>
   <property name="meta.media.top_field_first">0</property>
   <property name="meta.media.progressive">1</property>
+  <property name="set.test_audio">1</property>
+  <property name="set.test_image">0</property>
  </producer>
  <playlist id="playlist4">
-  <entry producer="producer2" in="00:00:00.000" out="00:00:03.267">
-   <property name="kdenlive:id">2</property>
+  <entry producer="producer2" in="00:00:00.000" out="00:00:33.267">
+   <property name="kdenlive:id">3</property>
   </entry>
  </playlist>
  <playlist id="playlist5"/>
- <tractor id="tractor2" in="00:00:00.000" out="00:00:03.267">
+ <tractor id="tractor2" in="00:00:00.000" out="00:00:33.267">
   <property name="kdenlive:trackheight">85</property>
   <property name="kdenlive:timeline_active">1</property>
   <property name="kdenlive:collapsed">0</property>
@@ -258,12 +258,12 @@
   <track producer="playlist5"/>
  </tractor>
  <playlist id="playlist6">
-  <entry producer="producer1" in="00:00:00.000" out="00:00:03.267">
-   <property name="kdenlive:id">3</property>
+  <entry producer="producer0" in="00:00:00.000" out="00:00:33.267">
+   <property name="kdenlive:id">2</property>
   </entry>
  </playlist>
  <playlist id="playlist7"/>
- <tractor id="tractor3" in="00:00:00.000" out="00:00:03.267">
+ <tractor id="tractor3" in="00:00:00.000" out="00:00:33.267">
   <property name="kdenlive:trackheight">85</property>
   <property name="kdenlive:timeline_active">1</property>
   <property name="kdenlive:collapsed">0</property>
@@ -272,7 +272,7 @@
   <track hide="audio" producer="playlist6"/>
   <track producer="playlist7"/>
  </tractor>
- <tractor id="tractor4" global_feed="1" in="00:00:00.000" out="00:16:43.300">
+ <tractor id="tractor4" global_feed="1" in="00:00:00.000" out="00:17:14.314">
   <track producer="black_track"/>
   <track producer="tractor0"/>
   <track producer="tractor1"/>

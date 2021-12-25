@@ -16,13 +16,12 @@
 #include "general_funct.cpp"
 #include "move_path.cpp"
 #include "place_cells.cpp"
+#include "boundary_cells.cpp"
 
 // for file out
 #include <iostream>
 #include <fstream>
 #include <string> // for filename
-
-#define PI 3.14159265
 
 using namespace std;
 
@@ -176,19 +175,6 @@ void print_firing(double *gc_firing, int t, G* g) {
 			cout << "\n";
 		}
 	}
-}
-
-double get_mex_hat(double d, G *g) {
-	double y_inter = g->y_inter;
-	double s_1 = g->s_1;
-	double s_2 = g->s_2;
-	double s_3 = g->s_3;
-	double m = g->m;
-	double scale = g->scale;
-
-	double mex_hat = y_inter + scale * (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(pow(m*d,2)/(2*pow(s_3,2)))));
-
-	return mex_hat;
 }
 
 void init_firing(double *gc_firing, G *g) {
@@ -376,7 +362,10 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	/* place cell firing */
-	place_cell_firing(gc_firing, g);
+	//place_cell_firing(gc_firing, g);
+
+	/* boundary cell firing */
+	//boundary_cell_firing(gc_firing, g);
 
 	/* grid cell and interneuron synapse connections */
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
@@ -439,9 +428,11 @@ int main() {
 	print_firing(gc_firing, 0, &g);
 
 	for (int t = 1; t <= g.run_time; t++) {
-		move_path(gc_firing, t, &g);
+		//move_path(gc_firing, t, &g);
+		move_path_bound_test(gc_firing, t, &g);
 
 		//print_firing(gc_firing, t, &g);
+		//cout << g.pos[0] << " " << g.pos[1] << "\n";
 
 		write_firing(gc_firing, t, &g);		
 	}

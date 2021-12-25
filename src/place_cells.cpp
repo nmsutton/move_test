@@ -1,5 +1,7 @@
 /*
 	place cell functions
+
+	these methods are modified versions of ones used in (solanka et al., 2015)
 */
 
 double pc_rate(int p_x, int p_y, int b_x, int b_y, G *g) {

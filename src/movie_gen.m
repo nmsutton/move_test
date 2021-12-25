@@ -7,7 +7,7 @@
 
 clear all;
 clc;
-time=999; % time steps, use (end frame - 1) = time
+time=9; % time steps, use (end frame - 1) = time
 t=[0:0.1:(time*.1)];
 hFigure = figure;
 numberOfFrames = length(t);
@@ -45,10 +45,10 @@ for frameIndex = 1 : numberOfFrames
   ylabel('neuron position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 4.5])
+  caxis([0 5.5])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
-  set(cb, 'ylim', [0 4.5]); % set colorbar range
+  set(cb, 'ylim', [0 5.5]); % set colorbar range
   %zlim([0, 1]);
   caption = sprintf('Grid cell firing amounts, t = %.0f', frameIndex);
   title(caption, 'FontSize', 15);
