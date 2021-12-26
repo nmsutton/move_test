@@ -229,6 +229,15 @@ void init_firing(double *gc_firing, G *g) {
 
 		gc_firing[i] = init_f * weights_bumps[i];
 	}
+
+	// set parameters to non-initial values
+	g->y_inter = g->y_inter_syn;
+	g->s_1 = g->s_1_syn;
+	g->s_2 = g->s_2_syn;
+	g->s_3 = g->s_3_syn;
+	g->m = g->m_syn;
+	g->scale = g->scale_syn;
+	g->run_time = g->run_time_syn;
 }
 
 void set_pos(G* g, char direction) {
@@ -263,50 +272,6 @@ void set_pos(G* g, char direction) {
 	}
 
 	g->last_dir=direction;
-}
-
-void set_weights(G *g) {
-	/*
-		Set weights
-
-		https://en.wikipedia.org/wiki/Ricker_wavelet (mexican hat)
-	*/
-
-	int pd_i, gc_i;
-	double d, mex_hat;
-	g->y_inter = g->y_inter_syn;
-	g->s_1 = g->s_1_syn;
-	g->s_2 = g->s_2_syn;
-	g->s_3 = g->s_3_syn;
-	g->m = g->m_syn;
-	g->scale = g->scale_syn;
-	g->run_time = g->run_time_syn;
-	double w_scale_f = 0.16; // multiple weight scaling factor to avoid weights increasing too much
-
-	// init weights
-	for (int i = 0; i < g->layer_size; i++) {
-		for (int j = 0; j < g->layer_size; j++) {
-			g->weights[i][j] = 0.0;
-		}
-	}
-
-	for (int pdy = 0; pdy < g->layer_y; pdy++) {
-		for (int pdx = 0; pdx < g->layer_x; pdx++) {
-			for (int gcy = 0; gcy < g->layer_y; gcy++) {
-				for (int gcx = 0; gcx < g->layer_x; gcx++) {			
-					pd_i = (pdy * g->layer_x) + pdx;
-					gc_i = (gcy * g->layer_x) + gcx;
-
-					d = get_distance(pdx, pdy, gcx, gcy, get_pd(pd_i, g), g);
-					if (d < g->dist_thresh) { 
-						mex_hat = get_mex_hat(d, g);
-					}
-
-					g->weights[pd_i][gc_i] = mex_hat;
-				}
-			}
-		}
-	}
 }
 
 double get_noise(G *g) {
@@ -423,9 +388,7 @@ int main() {
 	
 	init_firing(gc_firing, &g);
 
-	set_weights(&g);
-
-	print_firing(gc_firing, 0, &g);
+	//print_firing(gc_firing, 0, &g);
 
 	for (int t = 1; t <= g.run_time; t++) {
 		//move_path(gc_firing, t, &g);

@@ -8,16 +8,15 @@ struct G {
 	// general parameters
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
-	static const int bump_dist = 10.0; // inter-bump distance
+	static const int bump_dist = 20.0; // inter-bump distance
 	int bumps_x = 2; // number of bumps on x axis
 	int bumps_y = 2; // number of bumps on y axis
 	int num_bumps = bumps_x * bumps_y; // number of initial bumps
 	int pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
-	static const int layer_x = 20;//26;
-	static const int layer_y = 20;//26;
+	static const int layer_x = 40;//26;
+	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double weights[layer_size][layer_size];
 	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 
@@ -29,13 +28,13 @@ struct G {
 	// values for synapse activites
 	double speed_syn = 1.5;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
-	double y_inter_syn = 0.1;//0.32; // y intercept
-	double scale_syn = 3.0; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 1.5;//1.5;//1.8*.404318655; // sigma_1
-	double s_2_syn = 2.5;//2.528999925;//1.8;
-	double s_3_syn = 2.2;
+	double y_inter_syn =-0.2;//0.1;//0.32; // y intercept
+	double scale_syn = 1.5;//3.0; //0.1; // multiple synaptic connections scaling factor
+	double s_1_syn = 0.3;//1.5;//1.5;//1.8*.404318655; // sigma_1
+	double s_2_syn = 3.5;//2.5;//2.528999925;//1.8;
+	double s_3_syn = 2.5;//2.2;
 	double m_syn = 1.0; // magnitude variable for mex hat
-	double dist_thresh = 5.0; // distance threshold for only local connections
+	double dist_thresh = 6.5; // distance threshold for only local connections
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept

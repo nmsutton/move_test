@@ -1,3 +1,7 @@
+/*
+	movement sequences
+*/
+
 char rand_move() {
 	int num_directions = 5;
 	int rand_val = rand() % num_directions + 1;
