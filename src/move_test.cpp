@@ -206,6 +206,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->m = g->m_init;
 	g->m2 = g->m_init2;
 	g->m3 = g->m_init3;
+	g->m4 = g->m_init4;
 	g->scale = g->scale_init;
 	g->run_time = g->run_time_init;
 
@@ -244,6 +245,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->m = g->m_syn;
 	g->m2 = g->m_syn2;
 	g->m3 = g->m_syn3;
+	g->m4 = g->m_syn4;
 	g->scale = g->scale_syn;
 	g->run_time = g->run_time_syn;
 }
