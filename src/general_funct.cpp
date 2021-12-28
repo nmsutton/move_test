@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 50; // sim run time
+	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 
 	// noise parameters
@@ -34,7 +34,7 @@ struct G {
 	double s_2_syn = 10;
 	double s_3_syn = 1.5;//1.5;//2.5;
 	double s_4_syn = 15;
-	double s_5_syn = 0.05;
+	double s_5_syn = 0.5;
 	double m_syn = 1.5; // magnitude variable for mex hat
 	double m_syn2 = 0.5;
 	double m_syn3 = 8.0; // neg
