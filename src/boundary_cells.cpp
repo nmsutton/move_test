@@ -82,13 +82,13 @@ void periodic_firing(double x, double y, double *gc_firing, angle_details *a, G 
 	*/
 
 	if (a->boundary_angle == 90 || a->boundary_angle == 270) {
-		for (int i = 1; i < g->bumps_x; i++) {
-			create_bc_firing((x + (g->bump_dist*i)), y, gc_firing, g);
+		for (int i = 1; i < (g->bumps_x*2); i++) {
+			create_bc_firing((x + ((g->bump_dist/2)*i)), y, gc_firing, g);
 		}
 	}
 	else {
-		for (int i = 1; i < g->bumps_y; i++) {
-			create_bc_firing(x, (y + (g->bump_dist*i)), gc_firing, g);
+		for (int i = 1; i < (g->bumps_y*2); i++) {
+			create_bc_firing(x, (y + ((g->bump_dist/2)*i)), gc_firing, g);
 		}	
 	}
 }

@@ -202,7 +202,10 @@ void init_firing(double *gc_firing, G *g) {
 	g->s_2 = g->s_2_init;
 	g->s_3 = g->s_3_init;
 	g->s_4 = g->s_4_init;
+	g->s_5 = g->s_5_init;
 	g->m = g->m_init;
+	g->m2 = g->m_init2;
+	g->m3 = g->m_init3;
 	g->scale = g->scale_init;
 	g->run_time = g->run_time_init;
 
@@ -237,7 +240,10 @@ void init_firing(double *gc_firing, G *g) {
 	g->s_2 = g->s_2_syn;
 	g->s_3 = g->s_3_syn;
 	g->s_4 = g->s_4_syn;
+	g->s_5 = g->s_5_syn;
 	g->m = g->m_syn;
+	g->m2 = g->m_syn2;
+	g->m3 = g->m_syn3;
 	g->scale = g->scale_syn;
 	g->run_time = g->run_time_syn;
 }
@@ -299,13 +305,13 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		new_firing_group[i] = 0.00001;
 	}
-	g->tau = g->tau_syn;
+	/*g->tau = g->tau_syn;
 	g->y_inter = g->y_inter_syn;
 	g->scale = g->scale_syn;
 	g->s_1 = g->s_1_syn;
 	g->s_2 = g->s_2_syn;
 	g->s_3 = g->s_3_syn;
-	g->m = g->m_syn;
+	g->m = g->m_syn;*/
 
 	set_pos(g, direction);
 
@@ -332,7 +338,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	//place_cell_firing(gc_firing, g);
 
 	/* boundary cell firing */
-	boundary_cell_firing(gc_firing, g);
+	//boundary_cell_firing(gc_firing, g);
 
 	/* grid cell and interneuron synapse connections */
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {

@@ -17,11 +17,11 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 1000; // sim run time
+	double run_time_syn = 50; // sim run time
 	bool print_move = false; // print each move's direction
 
 	// noise parameters
-	bool noise_active = false; // activate noise
+	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 
@@ -31,10 +31,13 @@ struct G {
 	double y_inter_syn = 0.87;//-0.2; // y intercept
 	double scale_syn = 1.5;//3.0; //0.1; // multiple synaptic connections scaling factor
 	double s_1_syn = 0.25;
-	double s_2_syn = 10;//3.5;
-	double s_3_syn = 1.5;//2.5;
+	double s_2_syn = 10;
+	double s_3_syn = 1.5;//1.5;//2.5;
 	double s_4_syn = 15;
+	double s_5_syn = 15;
 	double m_syn = 1.5; // magnitude variable for mex hat
+	double m_syn2 = 0.5;
+	double m_syn3 = 0.5;
 	double dist_thresh = 20;//6.5; // distance threshold for only local connections
 
 	// initial values
@@ -44,9 +47,12 @@ struct G {
 	double s_2_init = s_2_syn;
 	double s_3_init = s_3_syn;
 	double s_4_init = s_4_syn;
+	double s_5_init = s_5_syn;
 	double m_init=m_syn;
+	double m_init2=m_syn2;
+	double m_init3=m_syn3;
 	double run_time_init = 1;
-	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, m, run_time;
+	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, run_time;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
@@ -70,14 +76,19 @@ double get_mex_hat(double d, G *g) {
 	double s_2 = g->s_2;
 	double s_3 = g->s_3;
 	double s_4 = g->s_4;
+	double s_5 = g->s_5;
 	double m = g->m;
+	double m2 = g->m2;
+	double m3 = g->m3;
 	double scale = g->scale;
 
 	double mex_hat = y_inter + scale * 
 	(2/(sqrt(3*s_1*pow(PI,1/4)))) *
 	(1-pow((m*d)/s_2,2)) *
 	(exp(-1*(pow(m*d,2)/(2*pow(s_3,2))))) -
-	(exp(-1*(pow(0.5*d,2)/(2*pow(s_4,2)))));
+	(exp(-1*(pow(m2*d,2)/(2*pow(s_4,2)))));/* -
+	(exp(-1*(pow((4.5*d)-m2,2)/(2*pow(s_4,2))))) -
+	(exp(-1*(pow((4.5*d)+m2,2)/(2*pow(s_4,2)))));*/
 
 	return mex_hat;
 }
