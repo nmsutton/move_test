@@ -201,6 +201,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->s_1 = g->s_1_init; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	g->s_2 = g->s_2_init;
 	g->s_3 = g->s_3_init;
+	g->s_4 = g->s_4_init;
 	g->m = g->m_init;
 	g->scale = g->scale_init;
 	g->run_time = g->run_time_init;
@@ -235,6 +236,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->s_1 = g->s_1_syn;
 	g->s_2 = g->s_2_syn;
 	g->s_3 = g->s_3_syn;
+	g->s_4 = g->s_4_syn;
 	g->m = g->m_syn;
 	g->scale = g->scale_syn;
 	g->run_time = g->run_time_syn;

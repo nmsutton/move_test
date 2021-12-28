@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 1000; // sim run time
+	double run_time_syn = 200; // sim run time
 	bool print_move = false; // print each move's direction
 
 	// noise parameters
@@ -28,13 +28,14 @@ struct G {
 	// values for synapse activites
 	double speed_syn = 1.5;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
 	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
-	double y_inter_syn =-0.2;//0.1;//0.32; // y intercept
+	double y_inter_syn = 0.87;//-0.2; // y intercept
 	double scale_syn = 1.5;//3.0; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 0.3;//1.5;//1.5;//1.8*.404318655; // sigma_1
-	double s_2_syn = 3.5;//2.5;//2.528999925;//1.8;
-	double s_3_syn = 2.5;//2.2;
-	double m_syn = 1.0; // magnitude variable for mex hat
-	double dist_thresh = 6.5; // distance threshold for only local connections
+	double s_1_syn = 0.25;
+	double s_2_syn = 10;//3.5;
+	double s_3_syn = 1.5;//2.5;
+	double s_4_syn = 15;
+	double m_syn = 1.5; // magnitude variable for mex hat
+	double dist_thresh = 20;//6.5; // distance threshold for only local connections
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -42,9 +43,10 @@ struct G {
 	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	double s_2_init = s_2_syn;
 	double s_3_init = s_3_syn;
+	double s_4_init = s_4_syn;
 	double m_init=m_syn;
 	double run_time_init = 1;
-	double speed, tau, y_inter, scale, s_1, s_2, s_3, m, run_time;
+	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, m, run_time;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
@@ -67,10 +69,15 @@ double get_mex_hat(double d, G *g) {
 	double s_1 = g->s_1;
 	double s_2 = g->s_2;
 	double s_3 = g->s_3;
+	double s_4 = g->s_4;
 	double m = g->m;
 	double scale = g->scale;
 
-	double mex_hat = y_inter + scale * (2/(sqrt(3*s_1*pow(PI,1/4))))*(1-pow((m*d)/s_2,2))*(exp(-1*(pow(m*d,2)/(2*pow(s_3,2)))));
+	double mex_hat = y_inter + scale * 
+	(2/(sqrt(3*s_1*pow(PI,1/4)))) *
+	(1-pow((m*d)/s_2,2)) *
+	(exp(-1*(pow(m*d,2)/(2*pow(s_3,2))))) -
+	(exp(-1*(pow(0.5*d,2)/(2*pow(s_4,2)))));
 
 	return mex_hat;
 }
