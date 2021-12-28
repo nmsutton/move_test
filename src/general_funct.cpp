@@ -17,11 +17,11 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 200; // sim run time
+	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 
 	// noise parameters
-	bool noise_active = true; // activate noise
+	bool noise_active = false; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 

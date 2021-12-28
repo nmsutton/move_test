@@ -194,7 +194,7 @@ void init_firing(double *gc_firing, G *g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		weights_bumps[g->layer_size] = 0.0;
 	}
-	int bump_pos[g->num_bumps][2] = {{init_x,init_y},{init_x,(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+bump_d),(init_y+bump_d)}};
+	int bump_pos[g->num_bumps][2] = {{init_x,init_y},{(init_x+(bump_d/2)),(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+(bump_d+(bump_d/2))),(init_y+bump_d)}};
 	//double bump_pos[num_bumps][2] = {{1,1}};
 	//double bump_pos[num_bumps][2] = {{4,4},{4,14},{14,4},{14,14}};
 	g->y_inter = g->y_inter_init; // y intercept
@@ -332,7 +332,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	//place_cell_firing(gc_firing, g);
 
 	/* boundary cell firing */
-	//boundary_cell_firing(gc_firing, g);
+	boundary_cell_firing(gc_firing, g);
 
 	/* grid cell and interneuron synapse connections */
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {
