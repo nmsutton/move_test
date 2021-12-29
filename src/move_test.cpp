@@ -207,6 +207,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->m2 = g->m_init2;
 	g->m3 = g->m_init3;
 	g->m4 = g->m_init4;
+	g->a = g->a_init;
 	g->scale = g->scale_init;
 	g->run_time = g->run_time_init;
 
@@ -246,6 +247,7 @@ void init_firing(double *gc_firing, G *g) {
 	g->m2 = g->m_syn2;
 	g->m3 = g->m_syn3;
 	g->m4 = g->m_syn4;
+	g->a = g->a_syn;
 	g->scale = g->scale_syn;
 	g->run_time = g->run_time_syn;
 }
@@ -337,7 +339,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	/* place cell firing */
-	place_cell_firing(gc_firing, g);
+	//place_cell_firing(gc_firing, g);
 
 	/* boundary cell firing */
 	//boundary_cell_firing(gc_firing, g);
@@ -399,6 +401,7 @@ int main() {
 	init_firing(gc_firing, &g);
 
 	//print_firing(gc_firing, 0, &g);
+	if (g.print_time == true) {printf("time processed:\n");}
 
 	for (int t = 1; t <= g.run_time; t++) {
 		//move_path(gc_firing, t, &g);
@@ -406,6 +409,7 @@ int main() {
 
 		//print_firing(gc_firing, t, &g);
 		//cout << g.pos[0] << " " << g.pos[1] << "\n";
+		if (g.print_time == true && t % 200 == 0) {printf("t: %d\n",t);}
 
 		write_firing(gc_firing, t, &g);		
 	}

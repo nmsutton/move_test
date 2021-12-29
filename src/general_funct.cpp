@@ -19,27 +19,29 @@ struct G {
 	static const int layer_size = layer_x * layer_y;
 	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
+	bool print_time = true; // print time after processing
 
 	// noise parameters
-	bool noise_active = true; // activate noise
+	bool noise_active = false; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.01; // scale to desired size for firing
+	double noise_scale = 0.005; // scale to desired size for firing
 
 	// values for synapse activites
-	double speed_syn = 1.5;//0.3;//0.2924981;//1.0;//0.3; // ext input speed level
-	double tau_syn = .6;//.7; // time constant; TODO: add diff equ for more realistic one
-	double y_inter_syn = 0.87;//-0.2; // y intercept
-	double scale_syn = 1.5;//3.0; //0.1; // multiple synaptic connections scaling factor
-	double s_1_syn = 0.25;
-	double s_2_syn = 10;
-	double s_3_syn = 1.5;//1.5;//2.5;
-	double s_4_syn = 15;
-	double s_5_syn = 0.5;
-	double m_syn = 1.5; // magnitude variable for mex hat
-	double m_syn2 = 0.5;
-	double m_syn3 = 8.0; // neg
-	double m_syn4 = 4.5; // multip
-	double dist_thresh = 20;//6.5; // distance threshold for only local connections
+	double speed_syn = 1.5; // ext input speed level
+	double tau_syn = .6;
+	double y_inter_syn = 0.69; // y intercept
+	double scale_syn = 3.0; // multiple synaptic connections scaling factor
+	double m_syn = 0.6; // magnitude variable for mex hat
+	double m_syn2 = 2.5;
+	double m_syn3 = 0.5; 
+	double m_syn4 = 1.0; 
+	double s_1_syn = 0.95;
+	double s_2_syn = 0.26;
+	double s_3_syn = 12;
+	double s_4_syn = 1.0;
+	double s_5_syn = 1.0;
+	double a_syn = 4.5; // add
+	double dist_thresh = 20; // distance threshold for only local connections
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -53,8 +55,9 @@ struct G {
 	double m_init2=m_syn2;
 	double m_init3=m_syn3;
 	double m_init4=m_syn4;
+	double a_init=a_syn;
 	double run_time_init = 1;
-	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, run_time;
+	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a, run_time;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
@@ -74,24 +77,49 @@ struct G {
 
 double get_mex_hat(double d, G *g) {
 	double y_inter = g->y_inter;
-	double s_1 = g->s_1;
-	double s_2 = g->s_2;
-	double s_3 = g->s_3;
-	double s_4 = g->s_4;
-	double s_5 = g->s_5;
-	double m = g->m;
+	double s1 = g->s_1;
+	double s2 = g->s_2;
+	double s3 = g->s_3;
+	double s4 = g->s_4;
+	double s5 = g->s_5;
+	double m1 = g->m;
 	double m2 = g->m2;
 	double m3 = g->m3;
 	double m4 = g->m4;
+	double a = g->a;
 	double scale = g->scale;
 
-	double mex_hat = y_inter + scale * 
+	/*double mex_hat = y_inter + scale * 
 	(2/(sqrt(3*s_1*pow(PI,1/4)))) *
 	(1-pow((m*d)/s_2,2)) *
 	(exp(-1*(pow(m*d,2)/(2*pow(s_3,2))))) -
 	(exp(-1*(pow(m2*d,2)/(2*pow(s_4,2))))) -
-	(exp(-1*(pow((m4*d)-m3,2)/(2*pow(s_5,2))))) -
-	(exp(-1*(pow((m4*d)+m3,2)/(2*pow(s_5,2)))));
+	.8*(exp(-1*(pow((m4*d)-m3,2)/(2*pow(s_5,2))))) -
+	.8*(exp(-1*(pow((m4*d)+m3,2)/(2*pow(s_5,2)))));*/
+
+	/*double mex_hat = 0.85 + ((exp(-1*((.105*pow(d,2))/(2*pow(0.6,2)))))*10.7
+	 - (exp(-1*(.07*pow(d,2)/(2*pow(.55,2)))))*8.5)*1.3
+	 - (exp(-1*(1.9*pow(d,2)/(2*pow(35,2)))));*/
+
+	/*double mex_hat = 0.94 + 
+	(2/(sqrt(3*1*pow(PI,1/4)))) *
+	1.5*(1-pow((1*d)/1,2)) *
+	(exp(-1*(pow(1*d,2)/(2*pow(1,2))))) -
+	(exp(-1*((1.9*pow(d,2))/(2*pow(55,2)))));*/
+
+	double mex_hat = y_inter + scale * 
+	(exp(-1*(m1*pow(d,2)/(2*pow(s1,2))))) -
+	1.2*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
+	1.2*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
+	(exp(-1*(m3*pow(d,2)/(2*pow(s3,2)))));
+
+	/*mex_hat = .87+1.5* 
+	(2/(sqrt(3*.25*pow(PI,1/4)))) *
+	(1-pow((1.5*d)/10,2)) *
+	(exp(-1*(pow(1.5*d,2)/(2*pow(1.5,2))))) -
+	(exp(-1*(pow(.5*d,2)/(2*pow(15,2))))) -
+	(exp(-1*(pow((4.5*d)-8,2)/(2*pow(.5,2))))) -
+	(exp(-1*(pow((4.5*d)+8,2)/(2*pow(.5,2)))));*/
 
 	return mex_hat;
 }
