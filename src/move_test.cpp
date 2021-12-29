@@ -337,7 +337,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	/* place cell firing */
-	//place_cell_firing(gc_firing, g);
+	place_cell_firing(gc_firing, g);
 
 	/* boundary cell firing */
 	//boundary_cell_firing(gc_firing, g);

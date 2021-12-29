@@ -64,8 +64,8 @@ struct G {
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
-	double pc_sig = 1.0; // sigma symbol; width of the place feild
-	double pc_level = 8.0; // place cell firing level
+	double pc_sig = 0.25; // sigma symbol; width of the place feild
+	double pc_level = 14.0; // place cell firing level
 
 	// boundary cell parameters
 	double r_d = 1.0; // boundary cell active region width

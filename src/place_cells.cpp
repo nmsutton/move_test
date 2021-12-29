@@ -33,6 +33,10 @@ void place_cell_firing(double *gc_firing, G *g) {
 			for (int b_i = 0; b_i < g->num_bumps; b_i++) {				
 				bump_x = g->pos[0] + ((b_i % g->bumps_x) * g->bump_dist); // closest bump x
 				bump_y = g->pos[1] + ((b_i / g->bumps_y) * g->bump_dist);
+				// adjust for staggering bump pattern
+				if (((b_i / g->bumps_y)+1) % 2 == 0) {
+					bump_x = bump_x + (g->bump_dist/2);
+				}
 				cb_dist_new = get_distance(p_x, p_y, bump_x, bump_y, 'n', g);
 
 				if (closest_bump == -1) {
