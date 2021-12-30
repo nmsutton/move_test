@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 50; // sim run time
+	double run_time_syn = 500; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 
@@ -29,18 +29,18 @@ struct G {
 	// values for synapse activites
 	double speed_syn = 1.5; // ext input speed level
 	double tau_syn = .6;
-	double y_inter_syn = 1.044;//1.055; // y intercept
+	double y_inter_syn = 1.048;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.5; // f4
-	double m_syn4 = 1.1; // f2 f3
+	double m_syn4 = 1.25; // f2 f3
 	double s_1_syn = 0.65; // f1
 	double s_2_syn = 0.35; // f2 f3
 	double s_3_syn = 20; // f4
 	double s_4_syn = 1.5; 
 	double s_5_syn = 1.0;
-	double a_syn = 4.4; // add f2 f3
+	double a_syn = 4.1; // add f2 f3
 	double dist_thresh = 20; // distance threshold for only local connections
 
 	// initial values

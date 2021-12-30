@@ -7,7 +7,7 @@
 
 clear all;
 clc;
-time=49; % time steps, use (end frame - 1) = time
+time=499; % time steps, use (end frame - 1) = time
 t=[0:0.1:(time*.1)];
 hFigure = figure;
 numberOfFrames = length(t);
