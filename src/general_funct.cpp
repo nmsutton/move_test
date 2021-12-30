@@ -17,30 +17,30 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 1000; // sim run time
+	double run_time_syn = 50; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 
 	// noise parameters
-	bool noise_active = false; // activate noise
+	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.005; // scale to desired size for firing
+	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
 	double speed_syn = 1.5; // ext input speed level
 	double tau_syn = .6;
-	double y_inter_syn = 0.69; // y intercept
+	double y_inter_syn = 1.044;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor
-	double m_syn = 0.6; // magnitude variable for mex hat
-	double m_syn2 = 2.5;
-	double m_syn3 = 0.5; 
-	double m_syn4 = 1.0; 
-	double s_1_syn = 0.95;
-	double s_2_syn = 0.26;
-	double s_3_syn = 12;
-	double s_4_syn = 1.0;
+	double m_syn = 0.4; // magnitude variable for mex hat f1
+	double m_syn2 = 2.5; // f2 f3
+	double m_syn3 = 0.5; // f4
+	double m_syn4 = 1.1; // f2 f3
+	double s_1_syn = 0.65; // f1
+	double s_2_syn = 0.35; // f2 f3
+	double s_3_syn = 20; // f4
+	double s_4_syn = 1.5; 
 	double s_5_syn = 1.0;
-	double a_syn = 4.5; // add
+	double a_syn = 4.4; // add f2 f3
 	double dist_thresh = 20; // distance threshold for only local connections
 
 	// initial values
@@ -108,18 +108,35 @@ double get_mex_hat(double d, G *g) {
 	(exp(-1*((1.9*pow(d,2))/(2*pow(55,2)))));*/
 
 	double mex_hat = y_inter + scale * 
-	(exp(-1*(m1*pow(d,2)/(2*pow(s1,2))))) -
-	1.2*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
-	1.2*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
-	(exp(-1*(m3*pow(d,2)/(2*pow(s3,2)))));
+	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2))))) -
+	m4*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
+	m4*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
+	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));
 
-	/*mex_hat = .87+1.5* 
-	(2/(sqrt(3*.25*pow(PI,1/4)))) *
-	(1-pow((1.5*d)/10,2)) *
-	(exp(-1*(pow(1.5*d,2)/(2*pow(1.5,2))))) -
-	(exp(-1*(pow(.5*d,2)/(2*pow(15,2))))) -
-	(exp(-1*(pow((4.5*d)-8,2)/(2*pow(.5,2))))) -
+	/*mex_hat = .87+1.5*(2/(sqrt(3*.25*pow(PI,1/4))))*
+	(1-pow((1.5*d)/10,2))*
+	(exp(-1*(pow(1.5*d,2)/(2*pow(1.5,2)))))-
+	(exp(-1*(pow(.5*d,2)/(2*pow(15,2)))))-
+	(exp(-1*(pow((4.5*d)-8,2)/(2*pow(.5,2)))))-
 	(exp(-1*(pow((4.5*d)+8,2)/(2*pow(.5,2)))));*/
+	/*
+	double sample_point = 1.0;
+
+	double mex_hat_test1 = y_inter + scale * 
+	(exp(-1*((m1*pow(sample_point,2))/(2*pow(s1,2))))) -
+	m4*(exp(-1*(pow((m2*sample_point)+a,2)/(2*pow(s2,2))))) -
+	m4*(exp(-1*(pow((m2*sample_point)-a,2)/(2*pow(s2,2))))) -
+	(exp(-1*((m3*pow(sample_point,2)-150)/(2*pow(s3,2)))));
+
+	double mex_hat_test2 = .87+1.5*(2/(sqrt(3*.25*pow(PI,1/4))))*
+	(1-pow((1.5*sample_point)/10,2))*
+	(exp(-1*(pow(1.5*sample_point,2)/(2*pow(1.5,2)))))-
+	(exp(-1*(pow(.5*sample_point,2)/(2*pow(15,2)))))-
+	(exp(-1*(pow((4.5*sample_point)+8,2)/(2*pow(.5,2)))))-
+	(exp(-1*(pow((4.5*sample_point)-8,2)/(2*pow(.5,2)))));
+
+	printf("\ncomparison: %f %f",mex_hat_test1,mex_hat_test2);
+	*/
 
 	return mex_hat;
 }
