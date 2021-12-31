@@ -23,7 +23,7 @@ void place_cell_firing(double *gc_firing, G *g) {
 	int closest_bump = -1; 
 	double cb_dist = -1;
 	double cb_dist_new = -1;
-	double pc_firing;
+	double pc_firing, bc_firing;
 
 	for (int p_y = 0; p_y < g->layer_y; p_y++) {
 		for (int p_x = 0; p_x < g->layer_x; p_x++) {
@@ -57,6 +57,13 @@ void place_cell_firing(double *gc_firing, G *g) {
 			pc_firing = 0.0;
 			if (cb_dist < g->dist_thresh) {
 				pc_firing = pc_rate(p_x, p_y, cb_x, cb_y, g);
+
+				// add boundary cell input
+				if (g->bc_to_pc) {
+					bc_firing = bc_for_pc(g);
+					//printf("%f|",bc_firing);
+					pc_firing = pc_firing + bc_firing;
+				}
 			}
 
 			gc_i = (p_y * g->layer_x) + p_x;

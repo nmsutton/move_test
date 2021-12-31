@@ -15,11 +15,11 @@ struct angle_details
 angle_details detect_boundary(double x, double y, G *g) {
 	struct angle_details a;
 
-	if (y >= 0 && y < g->r_d) {
+	if (y >= 0 && y < g->r_d) { // south
 		a.boundary_found = true;
 		a.boundary_angle = 180.0;
 	}
-	else if (y <= g->layer_y && y > (g->layer_y - g->r_d)) {
+	else if (y <= g->layer_y && y > (g->layer_y - g->r_d)) { // north
 		if (a.boundary_found) {
 			a.boundary_found_2 = true;
 			a.boundary_angle_2 = 0.0;
@@ -29,7 +29,7 @@ angle_details detect_boundary(double x, double y, G *g) {
 			a.boundary_angle = 0.0;
 		}
 	}
-	else if (x <= g->layer_x && x > (g->layer_x - g->r_d)) {
+	else if (x <= g->layer_x && x > (g->layer_x - g->r_d)) { // east
 		if (a.boundary_found) {
 			a.boundary_found_2 = true;
 			a.boundary_angle_2 = 90.0;
@@ -39,7 +39,7 @@ angle_details detect_boundary(double x, double y, G *g) {
 			a.boundary_angle = 90.0;
 		}
 	}
-	else if (x >= 0 && x < g->r_d) {
+	else if (x >= 0 && x < g->r_d) { // west
 		if (a.boundary_found) {
 			a.boundary_found_2 = true;
 			a.boundary_angle_2 = 270.0;
@@ -114,4 +114,57 @@ void boundary_cell_firing(double *gc_firing, G *g) {
 			}
 		}
 	}
+}
+
+void boundary_distances(G *g) {
+	double x = g->pos[0];
+	double y = g->pos[1];
+	double x2, y2;
+
+	// south
+	x2 = x;
+	y2 = 0;
+	g->bc_distances[0] = get_distance(x,y,x2,y2,'n',g);
+
+	// north
+	x2 = x;
+	y2 = g->layer_y;
+	g->bc_distances[1] = get_distance(x,y,x2,y2,'n',g);
+
+	// east
+	x2 = g->layer_x;
+	y2 = y;
+	g->bc_distances[2] = get_distance(x,y,x2,y2,'n',g);
+
+	// north
+	x2 = 0;
+	y2 = y;
+	g->bc_distances[3] = get_distance(x,y,x2,y2,'n',g);
+}
+
+double bc_for_pc(G *g) {
+	/*
+		Boundary cell firing for place cells.
+		Based on (Laptev and Burgess, 2019).
+		A modification to the firing response formula (b) is no distance factor in the fraction denominator.
+	*/
+
+	double b, bx, a0;
+	double d = g->bc_pd;
+	double s = g->bc_sig;
+	double signal = 0.0;
+
+	boundary_distances(g);
+
+	for (int i = 0; i < g->b_num; i++) {
+		bx = g->bc_distances[i];
+		a0 = g->bc_a0;
+		b = a0*exp(-pow(bx-d,2)/(2*pow(s-d,2)));
+		//printf("%f|",b);
+		if (b < 0) {b = 0;};
+
+		signal = signal + b;
+	}
+
+	return signal;
 }

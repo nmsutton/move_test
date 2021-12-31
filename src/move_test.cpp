@@ -15,8 +15,8 @@
 #include <iostream>
 #include "general_funct.cpp"
 #include "move_path.cpp"
-#include "place_cells.cpp"
 #include "boundary_cells.cpp"
+#include "place_cells.cpp"
 
 // for file out
 #include <iostream>
@@ -339,10 +339,14 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	/* place cell firing */
-	//place_cell_firing(gc_firing, g);
+	if (g->pc_to_gc) {
+		place_cell_firing(gc_firing, g);
+	}
 
 	/* boundary cell firing */
-	//boundary_cell_firing(gc_firing, g);
+	if (g->bc_to_gc) {
+		boundary_cell_firing(gc_firing, g);
+	}
 
 	/* grid cell and interneuron synapse connections */
 	for (int pdy = 0; pdy < g->layer_y; pdy++) {

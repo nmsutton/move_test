@@ -20,6 +20,9 @@ struct G {
 	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
+	bool bc_to_gc = false; // boundary cells to grid cells signaling
+	bool pc_to_gc = true; // place cells to grid cells signaling
+	bool bc_to_pc = true; // boundary cells to place cells signaling
 
 	// noise parameters
 	bool noise_active = true; // activate noise
@@ -73,6 +76,11 @@ struct G {
 	// boundary cell parameters
 	double r_d = 1.0; // boundary cell active region width
 	double bc_firing_scale = 0.1; // amount of boundary cell firing when activated
+	double bc_pd = 5.0; // boundary cell prefered distance
+	double bc_sig = 3.0; // boundary cell sigma factor for response curve
+	static const int b_num = 4.0; // number of borders
+	double bc_distances[b_num];
+	double bc_a0 = 0.5; // boundary cell A_0 factor for response curve
 };
 
 double get_mex_hat(double d, G *g) {
@@ -89,54 +97,11 @@ double get_mex_hat(double d, G *g) {
 	double a = g->a;
 	double scale = g->scale;
 
-	/*double mex_hat = y_inter + scale * 
-	(2/(sqrt(3*s_1*pow(PI,1/4)))) *
-	(1-pow((m*d)/s_2,2)) *
-	(exp(-1*(pow(m*d,2)/(2*pow(s_3,2))))) -
-	(exp(-1*(pow(m2*d,2)/(2*pow(s_4,2))))) -
-	.8*(exp(-1*(pow((m4*d)-m3,2)/(2*pow(s_5,2))))) -
-	.8*(exp(-1*(pow((m4*d)+m3,2)/(2*pow(s_5,2)))));*/
-
-	/*double mex_hat = 0.85 + ((exp(-1*((.105*pow(d,2))/(2*pow(0.6,2)))))*10.7
-	 - (exp(-1*(.07*pow(d,2)/(2*pow(.55,2)))))*8.5)*1.3
-	 - (exp(-1*(1.9*pow(d,2)/(2*pow(35,2)))));*/
-
-	/*double mex_hat = 0.94 + 
-	(2/(sqrt(3*1*pow(PI,1/4)))) *
-	1.5*(1-pow((1*d)/1,2)) *
-	(exp(-1*(pow(1*d,2)/(2*pow(1,2))))) -
-	(exp(-1*((1.9*pow(d,2))/(2*pow(55,2)))));*/
-
 	double mex_hat = y_inter + scale * 
 	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2))))) -
 	m4*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
 	m4*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
 	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));
-
-	/*mex_hat = .87+1.5*(2/(sqrt(3*.25*pow(PI,1/4))))*
-	(1-pow((1.5*d)/10,2))*
-	(exp(-1*(pow(1.5*d,2)/(2*pow(1.5,2)))))-
-	(exp(-1*(pow(.5*d,2)/(2*pow(15,2)))))-
-	(exp(-1*(pow((4.5*d)-8,2)/(2*pow(.5,2)))))-
-	(exp(-1*(pow((4.5*d)+8,2)/(2*pow(.5,2)))));*/
-	/*
-	double sample_point = 1.0;
-
-	double mex_hat_test1 = y_inter + scale * 
-	(exp(-1*((m1*pow(sample_point,2))/(2*pow(s1,2))))) -
-	m4*(exp(-1*(pow((m2*sample_point)+a,2)/(2*pow(s2,2))))) -
-	m4*(exp(-1*(pow((m2*sample_point)-a,2)/(2*pow(s2,2))))) -
-	(exp(-1*((m3*pow(sample_point,2)-150)/(2*pow(s3,2)))));
-
-	double mex_hat_test2 = .87+1.5*(2/(sqrt(3*.25*pow(PI,1/4))))*
-	(1-pow((1.5*sample_point)/10,2))*
-	(exp(-1*(pow(1.5*sample_point,2)/(2*pow(1.5,2)))))-
-	(exp(-1*(pow(.5*sample_point,2)/(2*pow(15,2)))))-
-	(exp(-1*(pow((4.5*sample_point)+8,2)/(2*pow(.5,2)))))-
-	(exp(-1*(pow((4.5*sample_point)-8,2)/(2*pow(.5,2)))));
-
-	printf("\ncomparison: %f %f",mex_hat_test1,mex_hat_test2);
-	*/
 
 	return mex_hat;
 }
