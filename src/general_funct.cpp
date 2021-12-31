@@ -77,10 +77,11 @@ struct G {
 	double r_d = 1.0; // boundary cell active region width
 	double bc_firing_scale = 0.1; // amount of boundary cell firing when activated
 	double bc_pd = 5.0; // boundary cell prefered distance
-	double bc_sig = 3.0; // boundary cell sigma factor for response curve
+	double bc_sig = 4.0; // boundary cell sigma factor for response curve
 	static const int b_num = 4.0; // number of borders
 	double bc_distances[b_num];
-	double bc_a0 = 0.5; // boundary cell A_0 factor for response curve
+	double bc_a0 = 1.0; // boundary cell A_0 factor for response curve
+	double bc_dist_thresh = 4.0; // local area of bc to pc influence threshold
 };
 
 double get_mex_hat(double d, G *g) {

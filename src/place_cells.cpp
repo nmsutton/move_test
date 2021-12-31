@@ -1,7 +1,11 @@
 /*
-	place cell functions
+	Place cell functions
 
-	these methods are modified versions of ones used in (solanka et al., 2015)
+	These methods are modified versions of ones used in (solanka et al., 2015)
+	One modification is that boundary cell input to place cells is limited to
+	a local region around the active place cell. This prevents boundary cell
+	signal from simply making an increase in signal of all place cells 
+	indiscriminately.
 */
 
 double pc_rate(int p_x, int p_y, int b_x, int b_y, G *g) {
@@ -59,9 +63,8 @@ void place_cell_firing(double *gc_firing, G *g) {
 				pc_firing = pc_rate(p_x, p_y, cb_x, cb_y, g);
 
 				// add boundary cell input
-				if (g->bc_to_pc) {
+				if (g->bc_to_pc && cb_dist < g->bc_dist_thresh) {	
 					bc_firing = bc_for_pc(g);
-					//printf("%f|",bc_firing);
 					pc_firing = pc_firing + bc_firing;
 				}
 			}
