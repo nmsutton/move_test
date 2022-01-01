@@ -233,7 +233,9 @@ void init_firing(double *gc_firing, G *g) {
 			weights_bumps[i] = 0; // no neg values rectifier
 		}
 
-		gc_firing[i] = init_f * weights_bumps[i];
+		if (g->init_bumps) {
+			gc_firing[i] = init_f * weights_bumps[i];
+		}
 	}
 
 	// set parameters to non-initial values
@@ -309,13 +311,6 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	for (int i = 0; i < g->layer_size; i++) {
 		new_firing_group[i] = 0.00001;
 	}
-	/*g->tau = g->tau_syn;
-	g->y_inter = g->y_inter_syn;
-	g->scale = g->scale_syn;
-	g->s_1 = g->s_1_syn;
-	g->s_2 = g->s_2_syn;
-	g->s_3 = g->s_3_syn;
-	g->m = g->m_syn;*/
 
 	set_pos(g, direction);
 
@@ -335,7 +330,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 			pd_fac = 0.0;//1.0;
 		}
 
-		gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
+		if (g->base_input) {
+			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
+		}
 	}
 
 	/* place cell firing */
@@ -374,16 +371,9 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		//gc_firing[i] = new_firing_group[i] * g->tau;
-		gc_firing[i] = new_firing_group[i];
-		// asymmetric sigmoid function for value bounding
-		// gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
-		/*if (gc_firing[i] < 1.2) {
-			gc_firing[i] = 0;
+		if (g->gc_to_gc) {
+			gc_firing[i] = new_firing_group[i];
 		}
-		else {
-			gc_firing[i] = g->asig_yi + g->asig_scale * ((exp(1)/g->asig_a) * exp(-exp(g->asig_b-g->asig_c*gc_firing[i])));
-		}*/
 
 		// original tau derivative
 		gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;

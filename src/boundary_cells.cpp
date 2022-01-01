@@ -1,7 +1,7 @@
 /*
 	boundary cells
 
-	based on methods in (Hardcastle, 2015)
+	based on methods in (Hardcastle, 2015) and (Laptev and Burgess, 2019)
 */
 
 struct angle_details
@@ -142,29 +142,53 @@ void boundary_distances(G *g) {
 	g->bc_distances[3] = get_distance(x,y,x2,y2,'n',g);
 }
 
-double bc_for_pc(G *g) {
+double bc_rate(int p_x, int p_y, int b_x, int b_y, G *g) {
+	/*
+		The signal equation below is based on equation A.7 from (laptev and burgess, 2019)
+		Formula A.7 is modified but still conforms to the general concepts of boundary
+		cell firing control described in the article.
+	*/
+
+	double db; // distance from a boundary
+	double a0, b, sig0, y, a, sig;
+	double signal = 0.0;
+	double amp; // amplitude
+	double var; // variance
+	double d = get_distance(p_x, p_y, b_x, b_y, 'n', g);
+
+	a0 = g->bc_a0;
+	b = g->bc_b;
+	sig0 = g->bc_sig0;
+	y = g->bc_y;
+	a = g->bc_a;
+	sig = g->bc_sig;
+
+	//signal = g->bc_level * exp(-((pow(d,2))/(2*pow(g->pc_sig,2))));
+	// add input from all boundaries
+	for (int i = 0; i < g->b_num; i++) {
+		db = abs(g->bc_distances[i] - g->bc_pd); // boundary distance value adjusted by prefered distance
+		amp = a0 - (b * db);
+		var = sig0 + (y * db);
+		signal = signal + amp*exp((-(pow(d,2))/(2*var+a*pow(sig,2))));
+		//printf("d:%f db:%f a:%f v:%f s:%f\n",d,db,amp,var,signal);
+		//printf();
+	}
+	if (signal < 0) {signal = 0;};
+
+	return signal;
+}
+
+double bc_for_pc(int p_x, int p_y, int b_x, int b_y, G *g) {
 	/*
 		Boundary cell firing for place cells.
 		Based on (Laptev and Burgess, 2019).
-		A modification to the firing response formula (b) is no distance factor in the fraction denominator.
 	*/
 
-	double b, bx, a0;
-	double d = g->bc_pd;
-	double s = g->bc_sig;
 	double signal = 0.0;
 
 	boundary_distances(g);
 
-	for (int i = 0; i < g->b_num; i++) {
-		bx = g->bc_distances[i];
-		a0 = g->bc_a0;
-		b = a0*exp(-pow(bx-d,2)/(2*pow(s-d,2)));
-		//printf("%f|",b);
-		if (b < 0) {b = 0;};
-
-		signal = signal + b;
-	}
+	signal = bc_rate(p_x, p_y, b_x, b_y, g);
 
 	return signal;
 }

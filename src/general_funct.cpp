@@ -17,15 +17,18 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 1000; // sim run time
+	double run_time_syn = 50; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
+	bool init_bumps = false; // inital bumps present
+	bool base_input = false; // baseline input
+	bool gc_to_gc = false; // grid cell to grid cell signaling
 	bool bc_to_gc = false; // boundary cells to grid cells signaling
 	bool pc_to_gc = true; // place cells to grid cells signaling
 	bool bc_to_pc = true; // boundary cells to place cells signaling
 
 	// noise parameters
-	bool noise_active = true; // activate noise
+	bool noise_active = false; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 
@@ -77,11 +80,16 @@ struct G {
 	double r_d = 1.0; // boundary cell active region width
 	double bc_firing_scale = 0.1; // amount of boundary cell firing when activated
 	double bc_pd = 5.0; // boundary cell prefered distance
-	double bc_sig = 4.0; // boundary cell sigma factor for response curve
 	static const int b_num = 4.0; // number of borders
 	double bc_distances[b_num];
-	double bc_a0 = 1.0; // boundary cell A_0 factor for response curve
-	double bc_dist_thresh = 4.0; // local area of bc to pc influence threshold
+	// response curve factors
+	//double bc_level = 14.0 * 0.25; // level of bc firing
+	double bc_a0 = 2.0; // boundary cell A_0 factor for response curve
+	double bc_b = 0.25;
+	double bc_sig0 = 0.0;
+	double bc_y = 0.25;
+	double bc_a = 0.25;
+	double bc_sig = 1.0;
 };
 
 double get_mex_hat(double d, G *g) {
