@@ -20,15 +20,16 @@ struct G {
 	double run_time_syn = 50; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
-	bool init_bumps = false; // inital bumps present
-	bool base_input = false; // baseline input
-	bool gc_to_gc = false; // grid cell to grid cell signaling
+	bool init_bumps = true; // inital bumps present
+	bool base_input = true; // baseline external signal input
+	bool gc_to_gc = true; // grid cell to grid cell signaling
 	bool bc_to_gc = false; // boundary cells to grid cells signaling
 	bool pc_to_gc = true; // place cells to grid cells signaling
 	bool bc_to_pc = true; // boundary cells to place cells signaling
+	bool pc_active = true; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = false; // activate noise
+	bool noise_active = true; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 

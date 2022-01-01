@@ -60,7 +60,9 @@ void place_cell_firing(double *gc_firing, G *g) {
 			// find firing
 			pc_firing = 0.0;
 			if (cb_dist < g->dist_thresh) {
-				//pc_firing = pc_rate(p_x, p_y, cb_x, cb_y, g);
+				if (g->pc_active) {
+					pc_firing = pc_rate(p_x, p_y, cb_x, cb_y, g);
+				}
 
 				// add boundary cell input
 				if (g->bc_to_pc) {
