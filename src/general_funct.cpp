@@ -12,12 +12,12 @@ struct G {
 	int bumps_x = 2; // number of bumps on x axis
 	int bumps_y = 2; // number of bumps on y axis
 	int num_bumps = bumps_x * bumps_y; // number of initial bumps
-	int pos[2] = {1,1}; // starting position
+	double pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 1000; // sim run time
+	double run_time_syn = 50; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 	bool init_bumps = true; // inital bumps present
@@ -34,9 +34,9 @@ struct G {
 	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
-	double speed_syn = 1.0; // grid cell input speed level
+	double speed_syn = 1.0; // starting grid cell input speed level
 	double speed_ext = 1.5; // baseline ext input speed level
-	double max_speed = 2.0; // maximum speed
+	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.032;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor

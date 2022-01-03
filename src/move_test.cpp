@@ -319,15 +319,13 @@ void ext_input(char direction, double *gc_firing, G* g) {
 	/* apply ext input first */
 	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		if (get_pd(gc_i, g) == direction) {
-			pd_fac = 1.0;//2;
-			//cout << "test";
+			pd_fac = 1.0;
 		}
 		else if(get_pd_opp(gc_i, g) == direction) {
-			pd_fac = 0.0;//-1.0;//.5;
-			//cout << "test";
+			pd_fac = 0.0;
 		}
 		else {
-			pd_fac = 0.0;//1.0;
+			pd_fac = 0.0;
 		}
 
 		if (g->base_input) {

@@ -1290,6 +1290,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 	else {
 		if (t % 50 == 0) {
 			g->speed_syn = rand_speed(g);
+			printf("speed: %f\n",g->speed_syn);
 		}
 		ext_input(rand_move(), gc_firing, g);
 	}
