@@ -299,7 +299,7 @@ double get_noise(G *g) {
 	return rand_val;
 }
 
-void ext_input(char direction, double speed, double *gc_firing, G* g) {
+void ext_input(char direction, double *gc_firing, G* g) {
 	/*
 		Apply external input
 	*/	
@@ -331,7 +331,7 @@ void ext_input(char direction, double speed, double *gc_firing, G* g) {
 		}
 
 		if (g->base_input) {
-			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_syn);
+			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_ext);
 		}
 	}
 

@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 50; // sim run time
+	double run_time_syn = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 	bool init_bumps = true; // inital bumps present
@@ -34,7 +34,9 @@ struct G {
 	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
-	double speed_syn = 1.5; // ext input speed level
+	double speed_syn = 1.0; // grid cell input speed level
+	double speed_ext = 1.5; // baseline ext input speed level
+	double max_speed = 2.0; // maximum speed
 	double tau_syn = .6;
 	double y_inter_syn = 1.032;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor
@@ -124,16 +126,16 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 
 	// preferred direction bias
 	if (pd == 'u') {
-		y2_y1 = y2_y1 - 1;
+		y2_y1 = y2_y1 - g->speed_syn;
 	}
 	if (pd == 'd') {
-		y2_y1 = y2_y1 + 1;
+		y2_y1 = y2_y1 + g->speed_syn;
 	}
 	if (pd == 'r') {
-		x2_x1 = x2_x1 - 1;
+		x2_x1 = x2_x1 - g->speed_syn;
 	}
 	if (pd == 'l') {
-		x2_x1 = x2_x1 + 1;
+		x2_x1 = x2_x1 + g->speed_syn;
 	}	
 
 	// torus wrap around
