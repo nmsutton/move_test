@@ -17,16 +17,16 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time = 200; // sim run time
+	double run_time = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 	bool init_bumps = true; // inital bumps present
 	bool base_input = true; // baseline external signal input
-	bool gc_to_gc = true; // grid cell to grid cell signaling
-	bool bc_to_gc = false; // boundary cells to grid cells signaling
-	bool pc_to_gc = true; // place cells to grid cells signaling
-	bool bc_to_pc = false; // boundary cells to place cells signaling
-	bool pc_active = true; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool gc_to_gc = 1; // grid cell to grid cell signaling
+	bool bc_to_gc = 0; // boundary cells to grid cells signaling
+	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool bc_to_pc = 0; // boundary cells to place cells signaling
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
 	bool noise_active = true; // activate noise
@@ -35,13 +35,13 @@ struct G {
 
 	// values for synapse activites
 	bool speed_adjustable = false;
-	double speed_syn = 1.5; // starting grid cell input speed level
+	double speed_syn = 1.0; // starting grid cell input speed level
 	double speed_ext = 1.5; // baseline ext input speed level
-	double min_ext = 1.0; // minimum external input for random speed generator. note: signal applied even when stopped.
-	double max_ext = 3.0; // maximum external input for random speed generator
+	double min_ext = 0.5; // minimum external input for random speed generator. note: signal applied even when stopped.
+	double max_ext = 0.5; // maximum external input for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.044;//1.055; // y intercept
-	double scale_syn = 3.0; // multiple synaptic connections scaling factor
+	double scale_syn = 3.0+0.5; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.5; // f4
@@ -121,13 +121,18 @@ double get_mex_hat(double d, G *g) {
 
 double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	// d = sqrt((e_x - i_x - o_x)^2+(e_y - i_y - o_y)^2)
-	int x2_x1 = (x2 - x1);
+	/*int x2_x1 = (x2 - x1);
 	int y2_y1 = (y2 - y1);
-	int half_point = g->layer_x / 2; // layer length divided by 2
-	double speed = g->speed_ext;
+	int half_point = g->layer_x / 2; // layer length divided by 2*/
+	double x2_x1 = (x2 - x1);
+	double y2_y1 = (y2 - y1);
+	double half_point = g->layer_x / 2; // layer length divided by 2
+	double speed = 1.0;
 
 	if (g->speed_adjustable) {speed = g->speed_syn;}
-	speed = 1.0; // testing value
+	else {
+		speed = g->max_ext; // for testing
+	}
 
 	// preferred direction bias
 	if (pd == 'u') {

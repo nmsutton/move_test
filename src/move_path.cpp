@@ -30,8 +30,11 @@ double rand_speed(G *g) {
 	double scale = 0.01;
 	double max = g->max_ext;
 	double min = g->min_ext;
-	int speed_sig = (max-min)*(1/scale); // additional speed signal
-	int rand_val = (min*(1/scale)) + (rand() % speed_sig);
+	int rand_val = (min*(1/scale));
+	int addit_sig = (max-min)*(1/scale); // additional speed signal
+	if (addit_sig > 0) {
+		rand_val = rand_val + (rand() % addit_sig);
+	}
 
 	return (double) rand_val * scale;
 }
