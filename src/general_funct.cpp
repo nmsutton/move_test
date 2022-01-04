@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time_syn = 50; // sim run time
+	double run_time = 1000; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 	bool init_bumps = true; // inital bumps present
@@ -35,8 +35,9 @@ struct G {
 
 	// values for synapse activites
 	double speed_syn = 1.0; // starting grid cell input speed level
-	double speed_ext = 1.5; // baseline ext input speed level
-	double max_speed = 1.0; // maximum speed for random speed generator
+	//double speed_ext = 1.5; // baseline ext input speed level
+	double min_ext = 1.0; // minimum external input for random speed generator. note: signal applied even when stopped.
+	double max_ext = 3.0; // maximum external input for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.032;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor
@@ -65,8 +66,7 @@ struct G {
 	double m_init3=m_syn3;
 	double m_init4=m_syn4;
 	double a_init=a_syn;
-	double run_time_init = 1;
-	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a, run_time;
+	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
@@ -90,7 +90,7 @@ struct G {
 	double bc_a0 = 2.0; // boundary cell A_0 factor for response curve
 	double bc_b = 0.25;
 	double bc_sig0 = 0.0;
-	double bc_y = 0.25;
+	double bc_y = 0.05;//0.25;
 	double bc_a = 0.25;
 	double bc_sig = 1.0;
 };

@@ -28,13 +28,25 @@ char rand_move() {
 
 double rand_speed(G *g) {
 	double scale = 0.01;
-	int max_speed = g->max_speed*(1/scale); 
-	int rand_val = rand() % max_speed;
+	double max = g->max_ext;
+	double min = g->min_ext;
+	int speed_sig = (max-min)*(1/scale); // additional speed signal
+	int rand_val = (min*(1/scale)) + (rand() % speed_sig);
 
 	return (double) rand_val * scale;
 }
 
 void ext_input(char direction, double *gc_firing, G* g);
+
+void rand_path(double *gc_firing, int t, G* g) {
+	// random move
+
+	if (t % 50 == 0) {
+		g->speed_syn = rand_speed(g);
+		//printf("speed: %f\n",g->speed_syn);
+	}
+	ext_input(rand_move(), gc_firing, g);
+}
 
 void move_path_bound_test(double *gc_firing, int t, G* g) {
 	// movement path
