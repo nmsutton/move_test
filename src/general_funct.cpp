@@ -17,7 +17,7 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
-	double run_time = 1000; // sim run time
+	double run_time = 200; // sim run time
 	bool print_move = false; // print each move's direction
 	bool print_time = true; // print time after processing
 	bool init_bumps = true; // inital bumps present
@@ -25,7 +25,7 @@ struct G {
 	bool gc_to_gc = true; // grid cell to grid cell signaling
 	bool bc_to_gc = false; // boundary cells to grid cells signaling
 	bool pc_to_gc = true; // place cells to grid cells signaling
-	bool bc_to_pc = true; // boundary cells to place cells signaling
+	bool bc_to_pc = false; // boundary cells to place cells signaling
 	bool pc_active = true; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
@@ -34,24 +34,25 @@ struct G {
 	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
-	double speed_syn = 1.0; // starting grid cell input speed level
-	//double speed_ext = 1.5; // baseline ext input speed level
+	bool speed_adjustable = false;
+	double speed_syn = 1.5; // starting grid cell input speed level
+	double speed_ext = 1.5; // baseline ext input speed level
 	double min_ext = 1.0; // minimum external input for random speed generator. note: signal applied even when stopped.
 	double max_ext = 3.0; // maximum external input for random speed generator
 	double tau_syn = .6;
-	double y_inter_syn = 1.032;//1.055; // y intercept
+	double y_inter_syn = 1.044;//1.055; // y intercept
 	double scale_syn = 3.0; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.5; // f4
-	double m_syn4 = 0.99; // f2 f3
+	double m_syn4 = 1.1; // f2 f3
 	double s_1_syn = 0.65; // f1
-	double s_2_syn = 0.45; // f2 f3
+	double s_2_syn = 0.35; // f2 f3
 	double s_3_syn = 20; // f4
 	double s_4_syn = 1.5; 
 	double s_5_syn = 1.0;
-	double a_syn = 4.6; // add f2 f3
-	double dist_thresh = 22; // distance threshold for only local connections
+	double a_syn = 4.4; // add f2 f3
+	double dist_thresh = 20; // distance threshold for only local connections
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -123,19 +124,23 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	int x2_x1 = (x2 - x1);
 	int y2_y1 = (y2 - y1);
 	int half_point = g->layer_x / 2; // layer length divided by 2
+	double speed = g->speed_ext;
+
+	if (g->speed_adjustable) {speed = g->speed_syn;}
+	speed = 1.0; // testing value
 
 	// preferred direction bias
 	if (pd == 'u') {
-		y2_y1 = y2_y1 - g->speed_syn;
+		y2_y1 = y2_y1 - speed;
 	}
 	if (pd == 'd') {
-		y2_y1 = y2_y1 + g->speed_syn;
+		y2_y1 = y2_y1 + speed;
 	}
 	if (pd == 'r') {
-		x2_x1 = x2_x1 - g->speed_syn;
+		x2_x1 = x2_x1 - speed;
 	}
 	if (pd == 'l') {
-		x2_x1 = x2_x1 + g->speed_syn;
+		x2_x1 = x2_x1 + speed;
 	}	
 
 	// torus wrap around
