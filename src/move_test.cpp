@@ -395,8 +395,8 @@ int main() {
 
 	for (int t = 1; t <= g.run_time; t++) {
 		//move_path(gc_firing, t, &g);
-		//move_path_bound_test(gc_firing, t, &g);
-		rand_path(gc_firing, t, &g);
+		move_path_bound_test(gc_firing, t, &g);
+		//rand_path(gc_firing, t, &g);
 		//straight_path(gc_firing, t, &g);
 
 		//print_firing(gc_firing, t, &g);

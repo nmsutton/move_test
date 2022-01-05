@@ -18,6 +18,7 @@ struct G {
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
 	int start_t = -1; // beginning time of move command
+	int mi = 0; // move list index
 	double run_time = 1000; // sim run time
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
@@ -38,7 +39,7 @@ struct G {
 	bool speed_adjustable = 1;
 	double speed = 0.333; // starting grid cell input speed level
 	double base_ext = 1.5; // baseline ext input speed level
-	double min_speed = 0.5; // minimum speed for random speed generator. note: signal applied even when stopped.
+	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.044;//1.055; // y intercept
@@ -128,23 +129,19 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	double x2_x1 = (x2 - x1);
 	double y2_y1 = (y2 - y1);
 	double half_point = g->layer_x / 2; // layer length divided by 2
-	double speed;
-
-	if (g->speed_adjustable) {speed = g->speed;}
-	else {speed = g->max_speed;}
 
 	// preferred direction bias
 	if (pd == 'u') {
-		y2_y1 = y2_y1 - speed;
+		y2_y1 = y2_y1 - 1;
 	}
 	if (pd == 'd') {
-		y2_y1 = y2_y1 + speed;
+		y2_y1 = y2_y1 + 1;
 	}
 	if (pd == 'r') {
-		x2_x1 = x2_x1 - speed;
+		x2_x1 = x2_x1 - 1;
 	}
 	if (pd == 'l') {
-		x2_x1 = x2_x1 + speed;
+		x2_x1 = x2_x1 + 1;
 	}	
 
 	// torus wrap around
