@@ -50,7 +50,7 @@ for frameIndex = 1 : numberOfFrames
   %set(cb, 'ylim', [0 4]); % set colorbar range
   set(cb, 'ylim', [0 5.5]); % set colorbar range
   %zlim([0, 1]);
-  caption = sprintf('Grid cell firing amounts, t = %.0f', frameIndex);
+  caption = sprintf('Grid cell firing amounts, t = %.0f ms', frameIndex);
   title(caption, 'FontSize', 15);
   %hold on;
   %hb = imshow(A, [], 'Colormap', gray(256));

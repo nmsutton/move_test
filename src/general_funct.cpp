@@ -17,11 +17,12 @@ struct G {
 	static const int layer_x = 40;//26;
 	static const int layer_y = 40;//26;
 	static const int layer_size = layer_x * layer_y;
+	int start_t = -1; // beginning time of move command
 	double run_time = 1000; // sim run time
-	bool print_move = false; // print each move's direction
-	bool print_time = true; // print time after processing
-	bool init_bumps = true; // inital bumps present
-	bool base_input = true; // baseline external signal input
+	bool print_move = 0; // print each move's direction
+	bool print_time = 1; // print time after processing
+	bool init_bumps = 1; // inital bumps present
+	bool base_input = 1; // baseline external signal input
 	bool gc_to_gc = 1; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 	bool pc_to_gc = 1; // place cells to grid cells signaling
@@ -29,19 +30,19 @@ struct G {
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = true; // activate noise
+	bool noise_active = 1; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
-	bool speed_adjustable = false;
-	double speed_syn = 1.0; // starting grid cell input speed level
-	double speed_ext = 1.5; // baseline ext input speed level
-	double min_ext = 0.5; // minimum external input for random speed generator. note: signal applied even when stopped.
-	double max_ext = 0.5; // maximum external input for random speed generator
+	bool speed_adjustable = 1;
+	double speed = 0.333; // starting grid cell input speed level
+	double base_ext = 1.5; // baseline ext input speed level
+	double min_speed = 0.5; // minimum speed for random speed generator. note: signal applied even when stopped.
+	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.044;//1.055; // y intercept
-	double scale_syn = 3.0+0.5; // multiple synaptic connections scaling factor
+	double scale_syn = 3.0; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.5; // f4
@@ -67,7 +68,7 @@ struct G {
 	double m_init3=m_syn3;
 	double m_init4=m_syn4;
 	double a_init=a_syn;
-	double speed, tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
+	double tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
 	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
@@ -127,12 +128,10 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, G *g) {
 	double x2_x1 = (x2 - x1);
 	double y2_y1 = (y2 - y1);
 	double half_point = g->layer_x / 2; // layer length divided by 2
-	double speed = 1.0;
+	double speed;
 
-	if (g->speed_adjustable) {speed = g->speed_syn;}
-	else {
-		speed = g->max_ext; // for testing
-	}
+	if (g->speed_adjustable) {speed = g->speed;}
+	else {speed = g->max_speed;}
 
 	// preferred direction bias
 	if (pd == 'u') {

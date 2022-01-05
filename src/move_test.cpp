@@ -327,7 +327,7 @@ void ext_input(char direction, double *gc_firing, G* g) {
 		}
 
 		if (g->base_input) {
-			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->speed_ext);
+			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->base_ext);
 		}
 	}
 
@@ -395,8 +395,9 @@ int main() {
 
 	for (int t = 1; t <= g.run_time; t++) {
 		//move_path(gc_firing, t, &g);
-		move_path_bound_test(gc_firing, t, &g);
-		//rand_path(gc_firing, t, &g);
+		//move_path_bound_test(gc_firing, t, &g);
+		rand_path(gc_firing, t, &g);
+		//straight_path(gc_firing, t, &g);
 
 		//print_firing(gc_firing, t, &g);
 		//cout << g.pos[0] << " " << g.pos[1] << "\n";

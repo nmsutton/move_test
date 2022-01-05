@@ -28,8 +28,8 @@ char rand_move() {
 
 double rand_speed(G *g) {
 	double scale = 0.01;
-	double max = g->max_ext;
-	double min = g->min_ext;
+	double max = g->max_speed;
+	double min = g->min_speed;
 	int rand_val = (min*(1/scale));
 	int addit_sig = (max-min)*(1/scale); // additional speed signal
 	if (addit_sig > 0) {
@@ -41,21 +41,47 @@ double rand_speed(G *g) {
 
 void ext_input(char direction, double *gc_firing, G* g);
 
+void create_move(char dir, double *gc_firing, int t, G* g) {
+	/*
+		Create movement after delay controlled by a speed variable.
+	*/
+	if (g->start_t == -1) {
+		g->start_t = t;
+	}
+	if (t < (g->start_t + round(1/g->speed))) {
+		ext_input('n', gc_firing, g);
+	}
+	else {
+		ext_input(dir, gc_firing, g);
+		g->start_t = -1;
+	}
+}
+
+void straight_path(double *gc_firing, int t, G* g) {
+	// stright line path
+	if (t % 5 == 0) {
+		ext_input('u', gc_firing, g);
+	}
+	else {
+		ext_input('n', gc_firing, g);
+	}	
+}
+
 void rand_path(double *gc_firing, int t, G* g) {
 	// random move
 
 	if (t % 50 == 0) {
-		g->speed_syn = rand_speed(g);
-		//printf("speed: %f\n",g->speed_syn);
+		g->speed = rand_speed(g);
+		//printf("speed: %f\n",g->speed);
 	}
-	ext_input(rand_move(), gc_firing, g);
+	create_move(rand_move(), gc_firing, t, g);
 }
 
 void move_path_bound_test(double *gc_firing, int t, G* g) {
 	// movement path
 
 	if (t == 1) {
-		g->speed_syn = 0.5;
+		g->speed = 0.5;
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 2) {
@@ -86,7 +112,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 10) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 11) {
@@ -117,7 +143,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 20) {
-		g->speed_syn = 1.5;
+		g->speed = 1.5;
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 21) {
@@ -148,7 +174,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 30) {
-		g->speed_syn = 2.0;
+		g->speed = 2.0;
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 31) {
@@ -239,7 +265,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 60) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 61) {
@@ -330,7 +356,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 90) {
-		g->speed_syn = 0.5;
+		g->speed = 0.5;
 		ext_input('d', gc_firing, g);
 	}	
 	else if (t == 91) {
@@ -421,7 +447,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 120) {
-		g->speed_syn = 3.0;
+		g->speed = 2.0;
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 121) {
@@ -512,7 +538,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 150) {
-		g->speed_syn = 0.5;
+		g->speed = 0.5;
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 151) {
@@ -603,7 +629,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 180) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('d', gc_firing, g);
 	}
 	else if (t == 181) {
@@ -694,7 +720,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 210) {
-		g->speed_syn = 1.5;
+		g->speed = 1.5;
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 211) {
@@ -965,7 +991,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 300) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 301) {
@@ -1116,7 +1142,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 350) {
-		g->speed_syn = 2.0;
+		g->speed = 2.0;
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 351) {
@@ -1267,11 +1293,11 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 400) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 491) {
-		g->speed_syn = 3.0;
+		g->speed = 3.0;
 		ext_input('r', gc_firing, g);
 	}
 	else if (t == 492) {
@@ -1296,7 +1322,7 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 		ext_input('u', gc_firing, g);
 	}
 	else if (t == 499) {
-		g->speed_syn = 1.0;
+		g->speed = 1.0;
 		ext_input('l', gc_firing, g);
 	}
 	else if (t == 500) {
@@ -1304,8 +1330,8 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 	}
 	else {
 		if (t % 50 == 0) {
-			g->speed_syn = rand_speed(g);
-			printf("speed: %f\n",g->speed_syn);
+			g->speed = rand_speed(g);
+			printf("speed: %f\n",g->speed);
 		}
 		ext_input(rand_move(), gc_firing, g);
 	}
