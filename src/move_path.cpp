@@ -136,8 +136,8 @@ void move_path(double *gc_firing, int t, G* g) {
 	'l','l','u','u','r','u','u','r','d','r','r','l','l','d','l','r','u','d','r','u','r','d','r','r','l','l',
 	'd','l','r','u','d','r','r','r','l','l','d','l','r','u','d','r','d','r','u','r','d','r','r','l','l','d',
 	'l','r','u','d','r','r','r','l','d','l','l','u','u','l','l','r','r','l','d','l','l','u','u','l','l',};
-	double speeds[];
-	int speed_times[];
+	double speeds[] = {1.0};
+	int speed_times[] = {1};
 
 	run_path(moves, speeds, speed_times, gc_firing, t, g);
 }
@@ -145,11 +145,11 @@ void move_path(double *gc_firing, int t, G* g) {
 void move_path2(double *gc_firing, int t, G* g) {
 	// movement path
 
-	moves = {'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
+	char moves[] = {'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n',};
-	double speeds[];
-	int speed_times[];
+	double speeds[] = {1.0};
+	int speed_times[] = {1};
 
 	run_path(moves, speeds, speed_times, gc_firing, t, g);
 }

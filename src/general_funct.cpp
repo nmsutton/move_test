@@ -37,13 +37,13 @@ struct G {
 
 	// values for synapse activites
 	bool speed_adjustable = 1;
-	double speed = 0.333; // starting grid cell input speed level
-	double base_ext = 1.5; // baseline ext input speed level
+	double speed = 1.0; // starting grid cell input speed level
+	double base_ext = 2.5; // baseline ext input speed level
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
 	double y_inter_syn = 1.044;//1.055; // y intercept
-	double scale_syn = 3.0; // multiple synaptic connections scaling factor
+	double scale_syn = 3.0+0.5; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.5; // f4
