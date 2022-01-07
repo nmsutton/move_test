@@ -302,7 +302,7 @@ void ext_input(char direction, double *gc_firing, G* g) {
 		Apply external input
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat, new_sig;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
 	double new_firing_group[g->layer_size];
@@ -327,7 +327,9 @@ void ext_input(char direction, double *gc_firing, G* g) {
 		}
 
 		if (g->base_input) {
-			gc_firing[gc_i] = gc_firing[gc_i] + (pd_fac * g->base_ext);
+			new_sig = gc_firing[gc_i] + (pd_fac * g->base_ext);
+			if (new_sig < 0) {new_sig = 0;};
+			gc_firing[gc_i] = new_sig;
 		}
 	}
 

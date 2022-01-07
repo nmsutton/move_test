@@ -8,7 +8,7 @@ struct G {
 	// general parameters
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
-	static const int bump_dist = 20.0; // inter-bump distance
+	static const int bump_dist = 10;//20.0; // inter-bump distance
 	int bumps_x = 2; // number of bumps on x axis
 	int bumps_y = 2; // number of bumps on y axis
 	int num_bumps = bumps_x * bumps_y; // number of initial bumps
@@ -19,42 +19,42 @@ struct G {
 	static const int layer_size = layer_x * layer_y;
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
-	double run_time = 1000; // sim run time
+	double run_time = 50; // sim run time
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
 	bool gc_to_gc = 1; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
 	bool noise_active = 1; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.01; // scale to desired size for firing
+	double noise_scale = 0.005; // scale to desired size for firing
 
 	// values for synapse activites
-	bool speed_adjustable = 1;
+	bool speed_adjustable = 0;
 	double speed = 1.0; // starting grid cell input speed level
-	double base_ext = 2.5; // baseline ext input speed level
+	double base_ext = 1.5; // baseline ext input speed level
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
-	double y_inter_syn = 1.044;//1.055; // y intercept
-	double scale_syn = 3.0+0.5; // multiple synaptic connections scaling factor
+	double y_inter_syn = -0.12;//1.158;//1.16;//0.43;//1.044;//1.044;//1.044;//1.055; // y intercept
+	double scale_syn = 2;//0.65;//3.0; // multiple synaptic connections scaling factor
 	double m_syn = 0.4; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
-	double m_syn3 = 0.5; // f4
-	double m_syn4 = 1.1; // f2 f3
+	double m_syn3 = 0.0;//0.5; // f4
+	double m_syn4 = 0.0;//1.1; // f2 f3
 	double s_1_syn = 0.65; // f1
 	double s_2_syn = 0.35; // f2 f3
 	double s_3_syn = 20; // f4
 	double s_4_syn = 1.5; 
 	double s_5_syn = 1.0;
 	double a_syn = 4.4; // add f2 f3
-	double dist_thresh = 20; // distance threshold for only local connections
+	double dist_thresh = 6;//20; // distance threshold for only local connections
 
 	// initial values
 	double y_inter_init = y_inter_syn; // y intercept
@@ -117,6 +117,9 @@ double get_mex_hat(double d, G *g) {
 	m4*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
 	m4*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
 	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));
+
+	mex_hat = y_inter + scale * 
+	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2)))));
 
 	return mex_hat;
 }

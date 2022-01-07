@@ -55,16 +55,14 @@ void create_move(char dir, double *gc_firing, int t, G* g) {
 		ext_input(dir, gc_firing, g);
 		g->start_t = -1;
 		g->mi = g->mi + 1;
+		//printf("%d\n",g->mi);
 	}
 }
 
-void run_path(char *moves, double *speeds, int *speed_times, double *gc_firing, int t, G *g) {
+void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, double *gc_firing, int t, G *g) {
 	/*
 		Run movements through a path.
 	*/
-
-	int num_moves = sizeof(moves) / sizeof(moves[0]);
-	int num_speeds = sizeof(speeds) / sizeof(speeds[0]);
 
 	if (g->mi < num_moves) {
 		for (int i = 0; i < num_speeds; i++) {
@@ -78,7 +76,7 @@ void run_path(char *moves, double *speeds, int *speed_times, double *gc_firing, 
 	else {
 		if (t % 50 == 0) {
 			g->speed = rand_speed(g);
-			printf("speed: %f\n",g->speed);
+			//printf("speed: %f nm: %d\n",g->speed,num_moves);
 		}
 		create_move(rand_move(), gc_firing, t, g);
 	}
@@ -111,10 +109,12 @@ void move_path_bound_test(double *gc_firing, int t, G* g) {
 	'r','l','l','u','r','r','l','l','u','l','l','u','r','r','u','n','n','n','n','n','n','r','r','r','d','u',
 	'r','l','u','r','u','d','r','l','l','r','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','d',
 	'r','l','l','u','r','r','l','l','u','l','l','r','l','l','u','u','l','l'};
-	double speeds[] {0.25,0.5,1.0,0.5,0.33,0.5,1.0,0.25,1.0,0.25,0.5,0.33,1.0,0.5,0.25};
+	double speeds[] {0.25,0.5,1.0,0.2,0.33,0.5,1.0,0.2,1.0,0.25,0.5,0.33,1.0,0.5,0.25};
 	int speed_times[] {1,10,20,30,60,90,120,150,180,210,300,350,400,491,499};
+	int num_moves = sizeof(moves);
+	int num_speeds = sizeof(speeds) / sizeof(double);
 
-	run_path(moves, speeds, speed_times, gc_firing, t, g);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, gc_firing, t, g);
 }
 
 void move_path(double *gc_firing, int t, G* g) {
@@ -138,8 +138,10 @@ void move_path(double *gc_firing, int t, G* g) {
 	'l','r','u','d','r','r','r','l','d','l','l','u','u','l','l','r','r','l','d','l','l','u','u','l','l',};
 	double speeds[] = {1.0};
 	int speed_times[] = {1};
+	int num_moves = sizeof(moves);
+	int num_speeds = sizeof(speeds);
 
-	run_path(moves, speeds, speed_times, gc_firing, t, g);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, gc_firing, t, g);
 }
 
 void move_path2(double *gc_firing, int t, G* g) {
@@ -150,6 +152,8 @@ void move_path2(double *gc_firing, int t, G* g) {
 	'n','n','n',};
 	double speeds[] = {1.0};
 	int speed_times[] = {1};
+	int num_moves = sizeof(moves);
+	int num_speeds = sizeof(speeds);
 
-	run_path(moves, speeds, speed_times, gc_firing, t, g);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, gc_firing, t, g);
 }
