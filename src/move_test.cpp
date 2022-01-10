@@ -383,7 +383,8 @@ void ext_input(char direction, double *gc_firing, G* g) {
 			//gc_firing[i] = (gc_firing[i]*3) + new_firing_group[i];
 			//gc_firing[i] = (gc_firing[i]*1050) + new_firing_group[i];
 			//gc_firing[i] = gc_firing[i] + new_firing_group[i] + (g->dist_thresh*1);
-			gc_firing[i] = gc_firing[i] + new_firing_group[i] + (g->dist_thresh*1.3);
+			//gc_firing[i] = gc_firing[i] + new_firing_group[i] + (g->dist_thresh*1.3);
+			gc_firing[i] = new_firing_group[i] + (g->dist_thresh*1.7);
 			//gc_firing[i] = new_firing_group[i];
 		}
 
