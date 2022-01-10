@@ -406,7 +406,7 @@ int main() {
 	
 	init_firing(gc_firing, &g);
 
-	print_firing(gc_firing, 0, &g);
+	//print_firing(gc_firing, 0, &g);
 	if (g.print_time == true) {printf("time processed:\n");}
 
 	for (int t = 1; t <= g.run_time; t++) {
@@ -415,7 +415,7 @@ int main() {
 		//rand_path(gc_firing, t, &g);
 		//straight_path(gc_firing, t, &g);
 
-		print_firing(gc_firing, t, &g);
+		//print_firing(gc_firing, t, &g);
 		//cout << g.pos[0] << " " << g.pos[1] << "\n";
 		if (g.print_time == true && t % 200 == 0) {printf("t: %d\n",t);}
 
