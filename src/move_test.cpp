@@ -360,13 +360,17 @@ void ext_input(char direction, double *gc_firing, G* g) {
 							//new_firing = g->y_inter + (pd_facs[gc_i] * mex_hat); // 0.05
 							//new_firing = g->y_inter + (pd_facs[pd_i] * mex_hat); // 0.05
 							//new_firing = g->y_inter + (gc_firing[pd_i] * mex_hat); // 0.05
-							new_firing = (gc_firing[pd_i] * mex_hat) - ((1/25)*2);
+							new_firing = (gc_firing[pd_i] * mex_hat) - (1/pow(g->dist_thresh,1.75));
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
+							if (gcy==1&&gcx==1) {
+								//printf("test\n");
+							}
 						}
 						//new_firing_group[gc_i] = new_firing_group[gc_i] - (1/g->layer_size);
 					}
 				}
+				//printf("end\n");
 			}
 		}
 	}
@@ -378,7 +382,7 @@ void ext_input(char direction, double *gc_firing, G* g) {
 			//gc_firing[i] = gc_firing[i] + new_firing_group[i] + 10;
 			//gc_firing[i] = (gc_firing[i]*3) + new_firing_group[i];
 			//gc_firing[i] = (gc_firing[i]*1050) + new_firing_group[i];
-			gc_firing[i] = gc_firing[i] + new_firing_group[i] + (g->dist_thresh*2);
+			gc_firing[i] = gc_firing[i] + new_firing_group[i] + (g->dist_thresh);
 		}
 
 		// original tau derivative
