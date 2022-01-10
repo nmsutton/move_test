@@ -377,6 +377,9 @@ void ext_input(char direction, double *gc_firing, G* g) {
 
 	for (int i = 0; i < g->layer_size; i++) {
 		if (g->gc_to_gc) {
+			if (new_firing_group[i] > 0) {
+				new_firing_group[i] = 0; // only negative values for IN weights
+			}
 			//gc_firing[i] = new_firing_group[i]+(gc_firing[pd_i]+5);
 			//gc_firing[i] = -10+(gc_firing[pd_i]+5);
 			//gc_firing[i] = gc_firing[i] + new_firing_group[i] + 10;
