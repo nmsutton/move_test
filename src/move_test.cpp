@@ -185,14 +185,9 @@ void init_firing(double *gc_firing, G *g) {
 	int init_y = g->bump_init_y;
 	int bump_d = g->bump_dist;
 	double mex_hat, d;
-	double init_f = 4.0; // initial firing amount
-	double w1 = 2.000001;
-	double w2 = 1.748563;
- 	double w3 = 1.473271;
- 	double scaling_factor = 0.5;
-	double weights_bumps[g->layer_size];
+	double firing_bumps[g->layer_size];
 	for (int i = 0; i < g->layer_size; i++) {
-		weights_bumps[g->layer_size] = 0.0;
+		firing_bumps[g->layer_size] = 0.0;
 	}
 	int bump_pos[g->num_bumps][2] = {{init_x,init_y},{(init_x+(bump_d/2)),(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+(bump_d+(bump_d/2))),(init_y+bump_d)}};
 	//double bump_pos[num_bumps][2] = {{1,1}};
@@ -219,21 +214,22 @@ void init_firing(double *gc_firing, G *g) {
 				d = get_distance(x, y, bump_pos[b][0], bump_pos[b][1], 'n', g);
 
 				if (d < g->dist_thresh) {
+				//if (true) {
 					mex_hat = get_mex_hat(d, g);
 
-					weights_bumps[i] = weights_bumps[i] + mex_hat;
+					firing_bumps[i] = firing_bumps[i] + mex_hat;
 				}
 			}
 		}
 	}
 
 	for (int i = 0; i < g->layer_size; i++) {
-		if (weights_bumps[i] < 0) {
-			weights_bumps[i] = 0; // no neg values rectifier
+		if (firing_bumps[i] < 0) {
+			firing_bumps[i] = 0; // no neg values rectifier
 		}
 
 		if (g->init_bumps) {
-			gc_firing[i] = init_f * weights_bumps[i];
+			gc_firing[i] = firing_bumps[i];
 		}
 	}
 
@@ -305,8 +301,10 @@ void ext_input(char direction, double *gc_firing, G* g) {
 	double new_firing, new_weight, weight_sum, pd_fac, mex_hat, new_sig;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
+	double pd_facs[g->layer_size];
 	double new_firing_group[g->layer_size];
 	for (int i = 0; i < g->layer_size; i++) {
+		pd_facs[i] = 0.00001;
 		new_firing_group[i] = 0.00001;
 	}
 
@@ -317,7 +315,7 @@ void ext_input(char direction, double *gc_firing, G* g) {
 	/* apply ext input first */
 	for (int gc_i = 0; gc_i < g->layer_size; gc_i++) {
 		if (get_pd(gc_i, g) == direction) {
-			pd_fac = 1.0;
+			pd_fac = 1.0;//1.0*3;
 		}
 		else if(get_pd_opp(gc_i, g) == direction) {
 			pd_fac = 0.0;
@@ -327,9 +325,8 @@ void ext_input(char direction, double *gc_firing, G* g) {
 		}
 
 		if (g->base_input) {
-			new_sig = gc_firing[gc_i] + (pd_fac * g->base_ext);
-			if (new_sig < 0) {new_sig = 0;};
-			gc_firing[gc_i] = new_sig;
+			//pd_facs[gc_i] = pd_fac;
+			gc_firing[gc_i] = gc_firing[gc_i] + pd_fac;
 		}
 	}
 
@@ -358,7 +355,11 @@ void ext_input(char direction, double *gc_firing, G* g) {
 
 							mex_hat = get_mex_hat(d, g);
 
-							new_firing = gc_firing[pd_i] * mex_hat; // 0.05
+							//new_firing = gc_firing[pd_i] * mex_hat*.333; // 0.05
+							//new_firing = g->y_inter + (pd_facs[gc_i] * mex_hat*.333); // 0.05
+							//new_firing = g->y_inter + (pd_facs[gc_i] * mex_hat); // 0.05
+							//new_firing = g->y_inter + (pd_facs[pd_i] * mex_hat); // 0.05
+							new_firing = g->y_inter + (gc_firing[pd_i] * mex_hat); // 0.05
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
@@ -370,11 +371,13 @@ void ext_input(char direction, double *gc_firing, G* g) {
 
 	for (int i = 0; i < g->layer_size; i++) {
 		if (g->gc_to_gc) {
-			gc_firing[i] = new_firing_group[i];
+			//gc_firing[i] = new_firing_group[i]+(gc_firing[pd_i]+5);
+			//gc_firing[i] = -10+(gc_firing[pd_i]+5);
+			gc_firing[i] = gc_firing[i] + new_firing_group[i] + 9;
 		}
 
 		// original tau derivative
-		gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
+		//gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
 		// non zero firing rectifier
 		if (gc_firing[i] < 0) {
 			gc_firing[i] = 0;
@@ -392,7 +395,7 @@ int main() {
 	
 	init_firing(gc_firing, &g);
 
-	//print_firing(gc_firing, 0, &g);
+	print_firing(gc_firing, 0, &g);
 	if (g.print_time == true) {printf("time processed:\n");}
 
 	for (int t = 1; t <= g.run_time; t++) {
@@ -401,7 +404,7 @@ int main() {
 		//rand_path(gc_firing, t, &g);
 		//straight_path(gc_firing, t, &g);
 
-		//print_firing(gc_firing, t, &g);
+		print_firing(gc_firing, t, &g);
 		//cout << g.pos[0] << " " << g.pos[1] << "\n";
 		if (g.print_time == true && t % 200 == 0) {printf("t: %d\n",t);}
 

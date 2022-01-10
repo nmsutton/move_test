@@ -8,19 +8,19 @@ struct G {
 	// general parameters
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
-	static const int bump_dist = 10;//20.0; // inter-bump distance
+	static const int bump_dist = 7.0; // inter-bump distance
 	int bumps_x = 2; // number of bumps on x axis
 	int bumps_y = 2; // number of bumps on y axis
 	int num_bumps = bumps_x * bumps_y; // number of initial bumps
 	double pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
-	static const int layer_x = 40;//26;
-	static const int layer_y = 40;//26;
+	static const int layer_x = 20;//26;
+	static const int layer_y = 20;//26;
 	static const int layer_size = layer_x * layer_y;
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
-	double run_time = 50; // sim run time
-	bool print_move = 0; // print each move's direction
+	double run_time =3; // sim run time
+	bool print_move = 1; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
@@ -31,34 +31,34 @@ struct G {
 	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = 1; // activate noise
+	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.005; // scale to desired size for firing
+	double noise_scale = 0.01; // scale to desired size for firing
 
 	// values for synapse activites
 	bool speed_adjustable = 0;
 	double speed = 1.0; // starting grid cell input speed level
-	double base_ext = 1.5; // baseline ext input speed level
+	double base_ext = 1.0;//2.5; // baseline ext input speed level
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
-	double y_inter_syn = -0.12;//1.158;//1.16;//0.43;//1.044;//1.044;//1.044;//1.055; // y intercept
-	double scale_syn = 2;//0.65;//3.0; // multiple synaptic connections scaling factor
-	double m_syn = 0.4; // magnitude variable for mex hat f1
+	double y_inter_syn = -0.25;//0.15;//-.5;//1.044;//1.055; // y intercept
+	double scale_syn = 0.25;//1.0; // multiple synaptic connections scaling factor
+	double m_syn = 0.3; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
-	double m_syn3 = 0.0;//0.5; // f4
-	double m_syn4 = 0.0;//1.1; // f2 f3
-	double s_1_syn = 0.65; // f1
+	double m_syn3 = 0.3; // f4
+	double m_syn4 = 1.1; // f2 f3
+	double s_1_syn = 0.6; // f1
 	double s_2_syn = 0.35; // f2 f3
-	double s_3_syn = 20; // f4
+	double s_3_syn = .4; // f4
 	double s_4_syn = 1.5; 
 	double s_5_syn = 1.0;
 	double a_syn = 4.4; // add f2 f3
-	double dist_thresh = 6;//20; // distance threshold for only local connections
+	double dist_thresh = 5; // distance threshold for only local connections
 
 	// initial values
-	double y_inter_init = y_inter_syn; // y intercept
-	double scale_init=scale_syn;	
+	double y_inter_init = 0.4;//y_inter_syn; // y intercept
+	double scale_init=3.0;//scale_syn;	
 	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	double s_2_init = s_2_syn;
 	double s_3_init = s_3_syn;
@@ -72,9 +72,9 @@ struct G {
 	double tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
-	double asig_a = -5;//-8.0;//0.6;//0.45;//2.0;//0.45;
-	double asig_b = 2.5;//2.2;//9.89493996719;//0.6;//2.15;//0.6;
-	double asig_c = 5.0;//4.9898;//3.0;//0.457921;//1.0;//0.5;
+	double asig_a = -10;//-8.0;//0.6;//0.45;//2.0;//0.45;
+	double asig_b = 9.5;//2.2;//9.89493996719;//0.6;//2.15;//0.6;
+	double asig_c = 10.0;//4.9898;//3.0;//0.457921;//1.0;//0.5;
 	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
 	double asig_scale = 1.0;//2.0;//-0.9;
 
@@ -111,15 +111,30 @@ double get_mex_hat(double d, G *g) {
 	double m4 = g->m4;
 	double a = g->a;
 	double scale = g->scale;
+	double mex_hat;
 
-	double mex_hat = y_inter + scale * 
+	/*mex_hat = y_inter + scale * 
 	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2))))) -
 	m4*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
 	m4*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
-	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));
+	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));*/
+
+	/*mex_hat = -50;
+
+	mex_hat = scale * 
+	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2))))) -
+	m4*(exp(-1*(pow((m2*d)+a,2)/(2*pow(s2,2))))) -
+	m4*(exp(-1*(pow((m2*d)-a,2)/(2*pow(s2,2))))) -
+	(exp(-1*((m3*pow(d,2)-150)/(2*pow(s3,2)))));*/
 
 	mex_hat = y_inter + scale * 
-	(exp(-1*((m1*pow(d,2))/(2*pow(s1,2)))));
+	((1-(pow((m1*d)/s1,2))) *
+	(exp(-1*(m3*pow(d,2))/(12*pow(s3,2)))));
+
+	//mex_hat = y_inter + scale;
+	if (d >1.9 && d < 2.1) {
+		//printf("%f %f\n",d,mex_hat);
+	}
 
 	return mex_hat;
 }
