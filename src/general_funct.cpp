@@ -19,7 +19,7 @@ struct G {
 	static const int layer_size = layer_x * layer_y;
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
-	double run_time =3; // sim run time
+	double run_time = 20; // sim run time
 	bool print_move = 1; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool init_bumps = 1; // inital bumps present
@@ -42,8 +42,8 @@ struct G {
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
-	double y_inter_syn = -0.25;//0.15;//-.5;//1.044;//1.055; // y intercept
-	double scale_syn = 0.25;//1.0; // multiple synaptic connections scaling factor
+	double y_inter_syn = 0.2;//-1;//-0.03;//-0.05;//0.15;//-.5;//1.044;//1.055; // y intercept
+	double scale_syn = 2.5;//0.25;//1.0; // multiple synaptic connections scaling factor
 	double m_syn = 0.3; // magnitude variable for mex hat f1
 	double m_syn2 = 2.5; // f2 f3
 	double m_syn3 = 0.3; // f4
@@ -72,9 +72,9 @@ struct G {
 	double tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
 
 	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
-	double asig_a = -10;//-8.0;//0.6;//0.45;//2.0;//0.45;
-	double asig_b = 9.5;//2.2;//9.89493996719;//0.6;//2.15;//0.6;
-	double asig_c = 10.0;//4.9898;//3.0;//0.457921;//1.0;//0.5;
+	double asig_a = -5;//-10;//-8.0;//0.6;//0.45;//2.0;//0.45;
+	double asig_b = 3.5;//9.5;//2.2;//9.89493996719;//0.6;//2.15;//0.6;
+	double asig_c = 5;//10.0;//4.9898;//3.0;//0.457921;//1.0;//0.5;
 	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
 	double asig_scale = 1.0;//2.0;//-0.9;
 
@@ -130,6 +130,10 @@ double get_mex_hat(double d, G *g) {
 	mex_hat = y_inter + scale * 
 	((1-(pow((m1*d)/s1,2))) *
 	(exp(-1*(m3*pow(d,2))/(12*pow(s3,2)))));
+
+	/*mex_hat = y_inter + scale * 
+	((1-(pow((m1*d)/s1,2))) *
+	(exp(-1*(m3*pow(d,2)))/(12*pow(s3,2))));*/
 
 	//mex_hat = y_inter + scale;
 	if (d >1.9 && d < 2.1) {

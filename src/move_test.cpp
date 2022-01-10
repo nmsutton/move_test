@@ -359,7 +359,8 @@ void ext_input(char direction, double *gc_firing, G* g) {
 							//new_firing = g->y_inter + (pd_facs[gc_i] * mex_hat*.333); // 0.05
 							//new_firing = g->y_inter + (pd_facs[gc_i] * mex_hat); // 0.05
 							//new_firing = g->y_inter + (pd_facs[pd_i] * mex_hat); // 0.05
-							new_firing = g->y_inter + (gc_firing[pd_i] * mex_hat); // 0.05
+							//new_firing = g->y_inter + (gc_firing[pd_i] * mex_hat); // 0.05
+							new_firing = gc_firing[pd_i] * mex_hat;
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
@@ -373,11 +374,14 @@ void ext_input(char direction, double *gc_firing, G* g) {
 		if (g->gc_to_gc) {
 			//gc_firing[i] = new_firing_group[i]+(gc_firing[pd_i]+5);
 			//gc_firing[i] = -10+(gc_firing[pd_i]+5);
-			gc_firing[i] = gc_firing[i] + new_firing_group[i] + 9;
+			//gc_firing[i] = gc_firing[i] + new_firing_group[i] + 10;
+			//gc_firing[i] = (gc_firing[i]*3) + new_firing_group[i];
+			gc_firing[i] = gc_firing[i] + new_firing_group[i];
+			//gc_firing[i] = (gc_firing[i]*1050) + new_firing_group[i];
 		}
 
 		// original tau derivative
-		//gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
+		gc_firing[i] = g->asig_a * exp(-1*(gc_firing[i]/g->asig_b))+g->asig_c;
 		// non zero firing rectifier
 		if (gc_firing[i] < 0) {
 			gc_firing[i] = 0;
